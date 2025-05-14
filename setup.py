@@ -2,17 +2,26 @@ from setuptools import find_packages, setup
 from typing import List
 
 HYPEN_E_DOT = "-e ."
-def get_requirement(file_path:str)->List[str]:
+def get_requirement()->List[str]:
     """
     This function returns a list of requirements
     """
-    requirements = []
-    with open(file_path) as file_obj:
-        requirements = file_obj.readlines()
-        requirements = [req.replace("\n", "") for req in requirements]
-        if HYPEN_E_DOT in requirements:
-            requirements.remove(HYPEN_E_DOT)
-    return requirements
+    requirement_list:List[str] = []
+    try: 
+        with open('requirements.txt', 'r') as file:
+            # read lines from the file_obj
+            lines = file.readlines()
+            for line in lines:
+                requirement = line.strip()
+                # ignore empty lines and -e .
+                if requirement and requirement != "-e .":
+                    requirement_list.append(requirement)
+    except FileNotFoundError:
+        print("requirements.txt file not found")
+        
+    return requirement_list  
+
+print(get_requirement())
     
 setup(
     name="OilGasMarketOptimisation",

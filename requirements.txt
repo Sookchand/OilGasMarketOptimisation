@@ -19,6 +19,7 @@ requests
 python-dotenv
 fastapi
 uvicorn
+certifi
 # SQLAlchemy  # If you need a relational database ORM
 # psycopg2-binary # If using PostgreSQL
 pymongo # If using MongoDB
@@ -45,4 +46,4 @@ schedule
 # Drift Detection (Optional - some are not pure python)
 # evidently # Powerful drift detection library - may have non-python dependencies
 
-# -e .
+## -e .
