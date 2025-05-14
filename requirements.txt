@@ -1,0 +1,48 @@
+# Core Data Science and Math
+pandas
+numpy
+scipy
+scikit-learn
+setuptools
+
+# Time Series Analysis
+statsmodels
+
+# Deep Learning
+tensorflow  # Or tensorflow-cpu if you don't have a GPU
+yfinance
+vaderSentiment
+openpyxl
+
+# Data Handling and APIs
+requests
+python-dotenv
+fastapi
+uvicorn
+# SQLAlchemy  # If you need a relational database ORM
+# psycopg2-binary # If using PostgreSQL
+pymongo # If using MongoDB
+
+# Vector Database
+chromadb  # Or faiss-cpu, faiss-gpu
+
+# NLP
+nltk
+transformers
+
+# Generative AI
+openai  # If using OpenAI API
+# Add libraries for other LLMs if needed
+
+# Visualization
+matplotlib
+seaborn
+plotly
+
+# Scheduling (Optional)
+schedule
+
+# Drift Detection (Optional - some are not pure python)
+# evidently # Powerful drift detection library - may have non-python dependencies
+
+# -e .
