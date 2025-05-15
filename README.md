@@ -48,10 +48,10 @@ OilGasOptimizationAI/
 │   └── __init__.py
 ├── models/
 │   ├── forecasting/               # AI models for price and potentially demand forecasting
-│   │   ├── crude_oil_forecaster.py
-│   │   ├── regular_gasoline_forecaster.py
-│   │   ├── conventional_gasoline_forecaster.py
-│   │   ├── diesel_forecaster.py
+│   │   ├── arima_forecaster.py    # ARIMA/SARIMA time series forecasting
+│   │   ├── xgboost_forecaster.py  # XGBoost machine learning forecasting
+│   │   ├── lstm_forecaster.py     # LSTM deep learning forecasting
+│   │   ├── model_selection.py     # Model comparison and selection
 │   │   └── __init__.py
 │   ├── supply_chain/              # Models for potential supply chain optimization (conceptual for now)
 │   │   ├── distribution_optimizer.py # Conceptual
@@ -81,17 +81,47 @@ OilGasOptimizationAI/
 │   │   ├── market_report_generator.py
 │   │   └── __init__.py
 │   └── __init__.py
+├── trading/                      # Trading strategies and execution
+│   ├── strategies/               # Trading strategy implementations
+│   │   ├── base_strategy.py      # Base class for all strategies
+│   │   ├── trend_following.py    # Trend following strategies (MA crossover, MACD)
+│   │   ├── mean_reversion.py     # Mean reversion strategies (RSI, Bollinger Bands)
+│   │   ├── volatility_breakout.py # Volatility breakout strategies (Donchian, ATR)
+│   │   └── __init__.py
+│   ├── execution/                # Strategy execution and backtesting
+│   │   ├── backtester.py         # Backtesting framework
+│   │   ├── performance_metrics.py # Trading performance metrics
+│   │   └── __init__.py
+│   └── __init__.py
+├── risk/                         # Risk management components
+│   ├── var_calculator.py         # Value at Risk (VaR) calculation
+│   ├── monte_carlo.py            # Monte Carlo simulation for risk analysis
+│   ├── portfolio_optimizer.py    # Portfolio optimization
+│   ├── risk_limits.py            # Risk limits and monitoring
+│   └── __init__.py
 ├── utils/                         # Utility functions
 │   ├── data_utils.py              # Data loading and processing helpers
 │   ├── model_utils.py             # Model training and evaluation helpers
 │   ├── config.py                  # Configuration settings
 │   ├── logging_config.py        # Logging setup
 │   └── __init__.py
+├── pipeline/                      # Pipeline orchestration
+│   ├── main.py                   # Main data processing and modeling pipeline
+│   ├── rag_pipeline.py           # RAG system pipeline
+│   ├── trading_pipeline.py       # Trading and risk management pipeline
+│   └── __init__.py
+├── dashboard/                    # Streamlit dashboards
+│   ├── app.py                    # Main dashboard for forecasting and market intelligence
+│   ├── trading_dashboard.py      # Trading and risk management dashboard
+│   ├── requirements.txt          # Dashboard-specific requirements
+│   └── README.md                 # Dashboard documentation
 ├── notebooks/                     # Jupyter notebooks for exploration and prototyping
 │   ├── data_exploration.ipynb
 │   ├── feature_engineering.ipynb
 │   ├── forecasting_models.ipynb
 │   ├── rag_exploration.ipynb
+│   ├── trading_strategies.ipynb
+│   ├── risk_management.ipynb
 │   ├── gen_ai_exploration.ipynb
 ├── reports/                       # Generated reports and visualizations
 ├── logs/                          # System logs
@@ -136,13 +166,97 @@ reports/ and logs/: These directories will store the generated outputs and syste
 
 tests/: Write unit tests to ensure the functionality of your modules, especially the models and data processing pipelines.
 
-Moving Forward:
+## Implementation Roadmap
 
-Data Acquisition: Your immediate next step is to obtain the historical price data for Crude Oil, Regular Gasoline, Conventional Gasoline, and Diesel.
-Data Exploration (Notebooks): Use Jupyter notebooks to explore the characteristics of this data.
-Insight Processing (RAG): Implement the insight_loader.py and insight_indexer.py to make the information in your insight files accessible.
-Feature Engineering: Based on your data exploration and the insights, start implementing the feature engineering logic in build_features.py.
-Model Selection and Prototyping (Notebooks): Experiment with different forecasting models in your notebooks.
+### Phase 1: Data Foundation & Initial Models (Weeks 1-2)
+
+#### Data Acquisition:
+- **Crude Oil Data**: Use the EIA API (https://www.eia.gov/opendata/) with the endpoint `/petroleum/pri/spt/data/?api_key={api_key}&frequency=daily&data[0]=value&facets[series][]=RWTC` for WTI crude oil prices
+- **Gasoline & Diesel Data**: Use EIA API endpoints for RBOB Gasoline (`/petroleum/pri/gnd/data/?api_key={api_key}&frequency=daily&data[0]=value&facets[series][]=EER_EPMRR_PF4_Y35NY_DPG`) and Ultra-Low Sulfur Diesel (`/petroleum/pri/gnd/data/?api_key={api_key}&frequency=daily&data[0]=value&facets[series][]=EER_EPD2F_PF4_Y35NY_DPG`)
+- **Alternative Sources**: If EIA API access is challenging, use Yahoo Finance (via yfinance package) with tickers: CL=F (WTI Crude), RB=F (RBOB Gasoline), HO=F (Heating Oil/Diesel)
+- **Macroeconomic Data**: Add Federal Reserve Economic Data (FRED) API for economic indicators like USD Index, inflation rates, and industrial production
+
+#### Data Exploration:
+- Create comprehensive notebooks in `notebooks/data_exploration.ipynb` focusing on:
+  - Price trend visualization across all commodities
+  - Correlation analysis between commodities
+  - Seasonality detection using decomposition methods
+  - Volatility clustering analysis
+  - Statistical tests for stationarity (ADF, KPSS)
+
+#### RAG System Implementation:
+- Implement `insight_loader.py` to parse markdown files using Python's markdown library
+- Use sentence transformers (e.g., `all-MiniLM-L6-v2`) for embedding generation
+- Implement `insight_indexer.py` using ChromaDB (already in requirements.txt) for vector storage
+- Create a simple query interface in `notebooks/rag_exploration.ipynb`
+
+### Phase 2: Core Models & Feature Engineering (Weeks 3-4)
+
+#### Feature Engineering:
+- Implement in `build_features.py` with the following features:
+  - Technical indicators: Moving averages (5, 10, 20, 50-day), RSI, MACD, Bollinger Bands
+  - Calendar features: Day of week, month, quarter, is_holiday
+  - Lagged features: Price lags (1, 3, 5, 10 days), return lags, volatility lags
+  - Cross-commodity features: Price ratios (e.g., crack spread = gasoline price - crude price)
+  - Macroeconomic features: USD index, interest rates, industrial production
+
+#### Model Selection & Implementation:
+- **Statistical Models**: ARIMA/SARIMA with optimal parameters determined via grid search
+- **Machine Learning Models**:
+  - Gradient Boosting (XGBoost) with hyperparameter tuning
+  - Random Forest with feature importance analysis
+- **Deep Learning Models**:
+  - LSTM networks with 1-2 layers for time series forecasting
+  - Implement in TensorFlow (already in requirements)
+- **Evaluation Framework**: Create robust backtesting with walk-forward validation
+
+### Phase 3: Agent Development & Integration (Weeks 5-6)
+
+#### Agentic AI Implementation:
+- Develop `market_analyzer_agent.py` to:
+  - Generate daily market summaries across all commodities
+  - Identify anomalies and unusual price movements
+  - Track correlations between commodities
+- Implement `qa_agent.py` to answer natural language queries using the RAG system
+
+#### Visualization & Reporting:
+- Create automated visualization pipeline in `price_trend_visualizer.py`
+- Implement `market_report_generator.py` to produce daily/weekly market reports
+- Add drift detection reporting for model monitoring
+
+### Phase 4: Trading Strategies & Risk Management (Weeks 7-8)
+
+#### Systematic Trading Implementation:
+- Create a new module `src/trading/` with the following components:
+  - `strategies/trend_following.py`: Implement momentum-based strategies using moving average crossovers
+  - `strategies/mean_reversion.py`: Develop strategies based on Bollinger Bands and RSI for mean reversion
+  - `strategies/volatility_breakout.py`: Implement strategies that capitalize on volatility expansion
+  - `execution/backtester.py`: Build a robust backtesting engine with realistic transaction costs and slippage
+  - `execution/performance_metrics.py`: Calculate Sharpe ratio, Sortino ratio, max drawdown, and other key metrics
+
+#### Risk Management Framework:
+- Implement `src/risk/` module with:
+  - `var_calculator.py`: Value at Risk (VaR) calculation using historical, parametric, and Monte Carlo methods
+  - `monte_carlo.py`: Simulation engine for scenario analysis
+  - `portfolio_optimizer.py`: Mean-variance optimization for portfolio construction
+  - `risk_limits.py`: Framework for setting and monitoring position limits and exposure
+
+#### Integration & Dashboard:
+- Create a FastAPI endpoint in `src/api/` to expose model predictions and trading signals
+- Implement a simple dashboard using Plotly Dash or Streamlit for visualization
+- Set up automated alerts for significant market movements or risk threshold breaches
+
+### Phase 5: Deployment & Continuous Improvement (Weeks 9-10)
+
+#### Containerization & Deployment:
+- Complete the Dockerfile for containerizing the application
+- Set up CI/CD pipeline using GitHub Actions (already configured in `.github/`)
+- Implement logging and monitoring for production deployment
+
+#### Continuous Learning & Improvement:
+- Implement online learning capabilities for models to adapt to changing market conditions
+- Set up automated retraining pipeline triggered by drift detection
+- Create A/B testing framework for evaluating new strategies against existing ones
 
 
 AI-Powered Market Intelligence for Oil & Gas: The Future of Quant Trading & Optimization
@@ -167,43 +281,212 @@ Are you ready to revolutionize the industry with AI-powered trading & optimizati
 📩 Looking to optimize oil trading strategies? Let’s discuss! 📌 Follow for more insights on AI, Quant Trading & Energy Analytics
 
 
-# Advice for Improvement
+# Getting Started
 
-Here's my advice to make your project fully aligned with its aims:
+## Installation
 
-Prioritize Forecasting and Market Intelligence:
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/oil-gas-market-optimization.git
+   cd oil-gas-market-optimization
+   ```
 
-Focus on getting the core forecasting models and RAG-based market intelligence working well. These are foundational.
-Implement LSTM and Gradient Boosting models in addition to ARIMA.
-Connect RAG to a real-time news API (e.g., NewsAPI, or even scraping with careful consideration of terms of service).
-Define the agent's roles clearly. Start with a simple "market summary" agent.
-Iterative Development:
+2. Create a virtual environment and install dependencies:
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   pip install -r requirements.txt
+   ```
 
-Don't try to implement everything at once. Follow an iterative approach.
-Get a basic version of each component working, then refine it.
-Data is Key:
+3. Create necessary directories:
+   ```bash
+   mkdir -p data/raw data/processed data/features data/insights data/chroma logs results/forecasting results/backtests results/model_selection results/monte_carlo results/trading
+   ```
 
-Ensure you have high-quality, up-to-date data.
-Consider incorporating diverse data sources (EIA reports, macroeconomic data, etc.).
-Trading Strategy Design:
+## Usage
 
-Start with very simple trading strategies (e.g., "buy if price goes up 2% in a day").
-Implement backtesting to evaluate strategy performance on historical data.
-Factor in transaction costs and other real-world constraints.
-Risk Management:
+### Generate Sample Data
 
-Begin with basic risk measures (e.g., portfolio volatility).
-Explore VaR as you progress.
-Risk management should be integrated into your trading strategies.
-Supply Chain (Phase 2):
+To generate sample data for testing:
 
-Treat supply chain optimization as a potential second phase of the project. It's a significant undertaking on its own.
-GenAI for Enhancement:
+```bash
+python create_basic_data.py
+```
 
-Use GenAI to enhance existing components (e.g., generating more detailed market reports, explaining model predictions), rather than creating entirely new modules.
-Evaluation Metrics:
+### Run Data Pipeline
 
-Rigorous model evaluation is critical. Use appropriate metrics (RMSE, MAE, MAPE for forecasting; Sharpe Ratio for trading).
-Documentation:
+To process the data and generate features:
 
-Keep your code and project structure well-documented. This will help you and others understand and maintain it.
+```bash
+python run_data_pipeline.py
+```
+
+### Run Trading Dashboard
+
+To launch the trading dashboard:
+
+```bash
+python run_trading_dashboard.py
+```
+
+This will start a Streamlit app that provides:
+- Strategy backtesting with multiple trading strategies
+- Performance metrics calculation
+- Risk analysis with Value at Risk (VaR)
+- Monte Carlo simulations
+
+### Run Full Pipeline
+
+To run the complete pipeline including data processing, model training, and trading strategy evaluation:
+
+```bash
+python run_full_pipeline.py
+```
+
+## Project Components
+
+### Data Processing
+
+The data processing pipeline handles:
+- Data acquisition from various sources
+- Cleaning and preprocessing
+- Feature engineering
+- Data storage in optimized formats
+
+### Trading Strategies
+
+The system implements several trading strategies:
+- **Trend Following**: Moving Average Crossover, MACD
+- **Mean Reversion**: RSI, Bollinger Bands
+- **Volatility Breakout**: Donchian Channel, ATR Channel
+
+### Risk Management
+
+The risk management components include:
+- Value at Risk (VaR) calculation using multiple methods
+- Monte Carlo simulation for scenario analysis
+- Portfolio optimization
+- Risk limits and monitoring
+
+### Dashboards
+
+The system provides interactive dashboards for:
+- Market analysis and visualization
+- Trading strategy backtesting
+- Risk assessment
+- Performance monitoring
+
+## Implementation Best Practices & Solutions
+
+### Technical Implementation Solutions
+
+#### Data Acquisition & Processing
+- **Solution for EIA API Access**: Create a utility function in `src/utils/data_utils.py` that handles API authentication, rate limiting, and error handling. Example:
+  ```python
+  def fetch_eia_data(series_id, start_date, end_date, frequency='daily', api_key=None):
+      """Fetch data from EIA API with error handling and rate limiting."""
+      if api_key is None:
+          api_key = os.getenv('EIA_API_KEY')
+
+      url = f"https://api.eia.gov/v2/petroleum/pri/spt/data/?api_key={api_key}&frequency={frequency}"
+      url += f"&data[0]=value&facets[series][]={series_id}&start={start_date}&end={end_date}"
+
+      response = requests.get(url)
+      if response.status_code == 429:  # Rate limited
+          time.sleep(2)  # Wait and retry
+          return fetch_eia_data(series_id, start_date, end_date, frequency, api_key)
+
+      return response.json()
+  ```
+
+- **Data Cleaning Pipeline**: Implement a robust pipeline in `src/pipeline/data_cleaning.py` that handles:
+  - Missing value imputation using forward fill for time series
+  - Outlier detection and treatment using IQR or Z-score methods
+  - Feature normalization/standardization
+  - Data integrity checks
+
+### Model Implementation
+- **Ensemble Approach**: Instead of relying on a single model type, implement an ensemble in `src/models/forecasting/ensemble_forecaster.py`:
+  ```python
+  class EnsembleForecaster:
+      def __init__(self, models=None, weights=None):
+          self.models = models or []
+          self.weights = weights or [1/len(models)] * len(models) if models else []
+
+      def fit(self, X, y):
+          for model in self.models:
+              model.fit(X, y)
+          return self
+
+      def predict(self, X):
+          predictions = [model.predict(X) for model in self.models]
+          return np.average(predictions, axis=0, weights=self.weights)
+  ```
+
+- **Hyperparameter Optimization**: Use Bayesian optimization instead of grid search for faster tuning:
+  ```python
+  # In src/models/forecasting/model_tuning.py
+  from skopt import BayesSearchCV
+
+  def optimize_xgboost(X_train, y_train, cv=5):
+      param_space = {
+          'n_estimators': (100, 1000),
+          'learning_rate': (0.01, 0.3, 'log-uniform'),
+          'max_depth': (3, 10),
+          'subsample': (0.5, 1.0),
+          'colsample_bytree': (0.5, 1.0)
+      }
+
+      model = XGBRegressor()
+      optimizer = BayesSearchCV(model, param_space, n_iter=50, cv=cv, n_jobs=-1)
+      optimizer.fit(X_train, y_train)
+
+      return optimizer.best_estimator_, optimizer.best_params_
+  ```
+
+### RAG System Enhancement
+- **Hybrid Retrieval**: Implement both semantic and keyword search in `src/rag/retrieval/hybrid_retriever.py`:
+  ```python
+  class HybridRetriever:
+      def __init__(self, vector_db, keyword_index):
+          self.vector_db = vector_db
+          self.keyword_index = keyword_index
+
+      def retrieve(self, query, top_k=5):
+          # Get semantic search results
+          semantic_results = self.vector_db.search(query, top_k=top_k)
+
+          # Get keyword search results
+          keyword_results = self.keyword_index.search(query, top_k=top_k)
+
+          # Combine and deduplicate results
+          combined_results = self._merge_results(semantic_results, keyword_results)
+          return combined_results[:top_k]
+  ```
+
+## Strategic Implementation Priorities
+
+1. **Start with Core Forecasting**: Implement ARIMA models first as they're simpler, then add machine learning models like XGBoost and finally deep learning with LSTM.
+
+2. **Iterative Development Approach**:
+   - Week 1: Data pipeline and basic statistical models
+   - Week 2: Add machine learning models and initial evaluation
+   - Week 3: Implement RAG system for market intelligence
+   - Week 4: Develop basic trading strategies and backtesting
+   - Week 5: Add risk management components
+   - Week 6: Integrate all components and create dashboard
+
+3. **Evaluation Framework**:
+   - For forecasting: Use RMSE, MAE, MAPE with time-based cross-validation
+   - For trading: Implement Sharpe ratio, Sortino ratio, maximum drawdown, and win rate
+   - For RAG: Evaluate using precision, recall, and user feedback
+
+4. **Supply Chain Integration (Future Phase)**:
+   - Defer complex supply chain optimization to a later phase
+   - Start with simple inventory forecasting based on price predictions
+
+5. **Documentation & Testing**:
+   - Add comprehensive docstrings to all functions and classes
+   - Implement unit tests for all core components
+   - Create integration tests for end-to-end workflows
+   - Document API endpoints with Swagger/OpenAPI

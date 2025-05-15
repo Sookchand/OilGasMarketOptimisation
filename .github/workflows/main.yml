@@ -1,0 +1,214 @@
+name: Oil & Gas Market Optimization CI/CD
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master, develop ]
+  workflow_dispatch:
+    # Manual trigger
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.8, 3.9]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+        cache: 'pip'
+
+    - name: Create directories
+      run: |
+        mkdir -p data/raw
+        mkdir -p data/processed
+        mkdir -p data/features
+        mkdir -p data/insights
+        mkdir -p data/chroma
+        mkdir -p logs
+        mkdir -p results/forecasting
+        mkdir -p results/backtests
+        mkdir -p results/model_selection
+        mkdir -p results/monte_carlo
+        mkdir -p results/trading
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install flake8 pytest pytest-cov
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+    - name: Lint with flake8
+      run: |
+        # stop the build if there are Python syntax errors or undefined names
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        # exit-zero treats all errors as warnings
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
+    - name: Test with pytest
+      run: |
+        pytest --cov=src tests/
+
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.9
+        cache: 'pip'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install build wheel
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+    - name: Build package
+      run: |
+        python -m build
+
+    - name: Archive production artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: dist-files
+        path: |
+          dist
+          README.md
+          docs/
+
+  data-pipeline:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'  # Only run on manual trigger
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.9
+        cache: 'pip'
+
+    - name: Create directories
+      run: |
+        mkdir -p data/raw
+        mkdir -p data/processed
+        mkdir -p data/features
+        mkdir -p data/insights
+        mkdir -p data/chroma
+        mkdir -p logs
+        mkdir -p results/forecasting
+        mkdir -p results/backtests
+        mkdir -p results/model_selection
+        mkdir -p results/monte_carlo
+        mkdir -p results/trading
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+    - name: Download sample data
+      run: |
+        # Download sample data for testing
+        curl -o data/raw/crude_oil.csv https://raw.githubusercontent.com/datasets/oil-prices/master/data/wti-daily.csv || echo "Sample data download failed, but continuing"
+
+    - name: Run data pipeline
+      run: |
+        python -m src.pipeline.main --model-type arima --steps acquisition cleaning feature_engineering
+      env:
+        EIA_API_KEY: ${{ secrets.EIA_API_KEY }}
+
+    - name: Archive pipeline results
+      uses: actions/upload-artifact@v3
+      with:
+        name: pipeline-results
+        path: |
+          data/processed
+          data/features
+          results/forecasting
+          logs
+
+  docker:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'  # Only run on main/master branch
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Login to DockerHub
+      if: github.event_name != 'pull_request'
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    - name: Extract metadata for Docker
+      id: meta
+      uses: docker/metadata-action@v4
+      with:
+        images: ${{ secrets.DOCKERHUB_USERNAME }}/oil-gas-market-optimization
+        tags: |
+          type=semver,pattern={{version}}
+          type=ref,event=branch
+          type=sha,format=short
+
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v4
+      with:
+        context: .
+        push: ${{ github.event_name != 'pull_request' }}
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+
+  deploy-docs:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'  # Only run on main/master branch
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.9
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install mkdocs mkdocs-material
+
+    - name: Setup documentation
+      run: |
+        # Copy README.md to docs/index.md
+        cp README.md docs/index.md
+        # Create mkdocs.yml if it doesn't exist
+        if [ ! -f mkdocs.yml ]; then
+          echo "site_name: Oil & Gas Market Optimization" > mkdocs.yml
+          echo "theme: material" >> mkdocs.yml
+          echo "nav:" >> mkdocs.yml
+          echo "  - Home: index.md" >> mkdocs.yml
+          echo "  - Instructions: instructions.md" >> mkdocs.yml
+        fi
+
+    - name: Deploy documentation
+      run: mkdocs gh-deploy --force
