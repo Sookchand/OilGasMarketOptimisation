@@ -12,15 +12,15 @@ This document provides instructions for deploying the Oil & Gas Market Optimizat
 ### 1. Prepare Your Repository
 
 1. Make sure your repository contains the following files:
-   - `streamlit_app.py` (the simplified version of the app)
-   - `requirements.txt` (with minimal dependencies)
+   - `minimal_app.py` (the extremely simplified version of the app)
+   - `requirements.txt` (with absolute minimum dependencies)
    - `.streamlit/config.toml` (Streamlit configuration)
-   - `packages.txt` (system dependencies)
+   - `packages.txt` (minimal system dependencies)
 
 2. Push these files to your GitHub repository:
    ```bash
-   git add streamlit_app.py requirements.txt .streamlit/config.toml packages.txt
-   git commit -m "Add files for Streamlit Cloud deployment"
+   git add minimal_app.py requirements.txt .streamlit/config.toml packages.txt
+   git commit -m "Add minimal files for Streamlit Cloud deployment"
    git push
    ```
 
@@ -29,7 +29,7 @@ This document provides instructions for deploying the Oil & Gas Market Optimizat
 1. Log in to [Streamlit Cloud](https://streamlit.io/cloud)
 2. Click "New app"
 3. Connect your GitHub repository
-4. Set the main file path to `streamlit_app.py`
+4. Set the main file path to `minimal_app.py`
 5. Click "Deploy"
 
 ### 3. Troubleshooting Deployment Issues
@@ -86,10 +86,10 @@ Once your app is deployed to Streamlit Cloud, you can integrate it with your por
 Add this HTML to your portfolio website:
 
 ```html
-<iframe 
-  src="https://yourusername-oil-gas-market-optimization-streamlit-app-abc123.streamlit.app" 
-  width="100%" 
-  height="800px" 
+<iframe
+  src="https://yourusername-oil-gas-market-optimization-minimal-app-abc123.streamlit.app"
+  width="100%"
+  height="800px"
   frameborder="0"
   title="Oil & Gas Market Optimization"
 ></iframe>
@@ -100,8 +100,8 @@ Add this HTML to your portfolio website:
 Add a button or link to your portfolio website:
 
 ```html
-<a href="https://yourusername-oil-gas-market-optimization-streamlit-app-abc123.streamlit.app" 
-   class="button" 
+<a href="https://yourusername-oil-gas-market-optimization-minimal-app-abc123.streamlit.app"
+   class="button"
    target="_blank">
   Launch Oil & Gas Market Optimization App
 </a>
