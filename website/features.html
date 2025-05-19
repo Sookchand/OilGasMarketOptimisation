@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Features | Oil & Gas Market Optimization</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="page-header">
+        <nav class="navbar">
+            <div class="container">
+                <div class="logo">
+                    <a href="index.html">
+                        <span class="logo-icon"><i class="fas fa-chart-line"></i></span>
+                        <span class="logo-text">OilGasOptimize</span>
+                    </a>
+                </div>
+                <div class="nav-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="demo.html">Interactive Demo</a></li>
+                    <li><a href="features.html" class="active">Features</a></li>
+                    <li><a href="documentation.html">Documentation</a></li>
+                    <li><a href="about.html">About</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <section class="features-intro">
+        <div class="container">
+            <h1 class="page-title">Platform Features</h1>
+            <p class="page-description">Discover the comprehensive suite of tools and capabilities that make our Oil & Gas Market Optimization platform powerful and versatile.</p>
+        </div>
+    </section>
+
+    <section class="feature-categories">
+        <div class="container">
+            <div class="category-tabs">
+                <button class="category-tab active" data-category="all">All Features</button>
+                <button class="category-tab" data-category="data">Data Management</button>
+                <button class="category-tab" data-category="trading">Trading Strategies</button>
+                <button class="category-tab" data-category="risk">Risk Analysis</button>
+                <button class="category-tab" data-category="visualization">Visualization</button>
+            </div>
+
+            <div class="features-list">
+                <!-- Data Management Features -->
+                <div class="feature-item" data-categories="data">
+                    <div class="feature-icon">
+                        <i class="fas fa-upload"></i>
+                    </div>
+                    <div class="feature-details">
+                        <h3>Custom Data Upload</h3>
+                        <p>Upload your own CSV or Excel files for each commodity. The system supports various data formats and automatically detects date columns and price data.</p>
+                    </div>
+                </div>
+
+                <div class="feature-item" data-categories="data">
+                    <div class="feature-icon">
+                        <i class="fas fa-broom"></i>
+                    </div>
+                    <div class="feature-details">
+                        <h3>Automated Data Cleaning</h3>
+                        <p>The platform automatically handles missing values, outliers, and data inconsistencies to ensure high-quality analysis.</p>
+                    </div>
+                </div>
+
+                <div class="feature-item" data-categories="data">
+                    <div class="feature-icon">
+                        <i class="fas fa-random"></i>
+                    </div>
+                    <div class="feature-details">
+                        <h3>Sample Data Generation</h3>
+                        <p>Don't have your own data? Generate realistic sample data for all four commodities with just one click.</p>
+                    </div>
+                </div>
+
+                <div class="feature-item" data-categories="data">
+                    <div class="feature-icon">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <div class="feature-details">
+                        <h3>Feature Engineering</h3>
+                        <p>Automatically generate technical indicators and features for analysis, including moving averages, RSI, MACD, and Bollinger Bands.</p>
+                    </div>
+                </div>
+
+                <!-- Trading Strategy Features -->
+                <div class="feature-item" data-categories="trading">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="feature-details">
+                        <h3>Moving Average Crossover</h3>
+                        <p>Implement and backtest moving average crossover strategies with customizable fast and slow window parameters.</p>
+                    </div>
+                </div>
+
+                <div class="feature-item" data-categories="trading">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <div class="feature-details">
+                        <h3>RSI Strategy</h3>
+                        <p>Use Relative Strength Index (RSI) for mean reversion trading with adjustable overbought and oversold thresholds.</p>
+                    </div>
+                </div>
+
+                <div class="feature-item" data-categories="trading">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-area"></i>
+                    </div>
+                    <div class="feature-details">
+                        <h3>Bollinger Bands Strategy</h3>
+                        <p>Implement Bollinger Bands strategies for volatility-based trading decisions.</p>
+                    </div>
+                </div>
+
+                <div class="feature-item" data-categories="trading">
+                    <div class="feature-icon">
+                        <i class="fas fa-sliders-h"></i>
+                    </div>
+                    <div class="feature-details">
+                        <h3>Parameter Optimization</h3>
+                        <p>Fine-tune strategy parameters to maximize performance metrics like Sharpe ratio or total return.</p>
+                    </div>
+                </div>
+
+                <!-- Risk Analysis Features -->
+                <div class="feature-item" data-categories="risk">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="feature-details">
+                        <h3>Value at Risk (VaR)</h3>
+                        <p>Calculate VaR using multiple methodologies including Historical, Parametric, and Monte Carlo approaches.</p>
+                    </div>
+                </div>
+
+                <div class="feature-item" data-categories="risk">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-pie"></i>
+                    </div>
+                    <div class="feature-details">
+                        <h3>Return Distribution Analysis</h3>
+                        <p>Visualize and analyze return distributions to understand market behavior and risk characteristics.</p>
+                    </div>
+                </div>
+
+                <div class="feature-item" data-categories="risk">
+                    <div class="feature-icon">
+                        <i class="fas fa-dice"></i>
+                    </div>
+                    <div class="feature-details">
+                        <h3>Monte Carlo Simulation</h3>
+                        <p>Run Monte Carlo simulations to project potential future price paths and assess strategy robustness.</p>
+                    </div>
+                </div>
+
+                <div class="feature-item" data-categories="risk">
+                    <div class="feature-icon">
+                        <i class="fas fa-water"></i>
+                    </div>
+                    <div class="feature-details">
+                        <h3>Drawdown Analysis</h3>
+                        <p>Analyze maximum drawdowns and recovery periods to assess strategy risk.</p>
+                    </div>
+                </div>
+
+                <!-- Visualization Features -->
+                <div class="feature-item" data-categories="visualization">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <div class="feature-details">
+                        <h3>Interactive Charts</h3>
+                        <p>Explore data and results through interactive charts with zoom, pan, and hover capabilities.</p>
+                    </div>
+                </div>
+
+                <div class="feature-item" data-categories="visualization">
+                    <div class="feature-icon">
+                        <i class="fas fa-table"></i>
+                    </div>
+                    <div class="feature-details">
+                        <h3>Performance Metrics Dashboard</h3>
+                        <p>View comprehensive performance metrics including total return, Sharpe ratio, volatility, and win rate.</p>
+                    </div>
+                </div>
+
+                <div class="feature-item" data-categories="visualization">
+                    <div class="feature-icon">
+                        <i class="fas fa-signal"></i>
+                    </div>
+                    <div class="feature-details">
+                        <h3>Strategy Comparison</h3>
+                        <p>Compare multiple strategies side-by-side to identify the best approach for different market conditions.</p>
+                    </div>
+                </div>
+
+                <div class="feature-item" data-categories="visualization">
+                    <div class="feature-icon">
+                        <i class="fas fa-download"></i>
+                    </div>
+                    <div class="feature-details">
+                        <h3>Export Capabilities</h3>
+                        <p>Export data, charts, and analysis results in various formats including CSV, Excel, and PNG.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="upcoming-features">
+        <div class="container">
+            <h2 class="section-title">Coming Soon</h2>
+            <p class="section-description">We're constantly improving our platform. Here are some features we're currently developing:</p>
+            
+            <div class="upcoming-features-grid">
+                <div class="upcoming-feature">
+                    <div class="feature-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <div class="feature-info">
+                        <h3>Machine Learning Forecasting</h3>
+                        <p>Advanced price prediction using machine learning algorithms including LSTM, XGBoost, and ensemble methods.</p>
+                    </div>
+                </div>
+                <div class="upcoming-feature">
+                    <div class="feature-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="feature-info">
+                        <h3>Automated Strategy Generation</h3>
+                        <p>AI-powered system to automatically generate and optimize trading strategies based on market conditions.</p>
+                    </div>
+                </div>
+                <div class="upcoming-feature">
+                    <div class="feature-icon">
+                        <i class="fas fa-cubes"></i>
+                    </div>
+                    <div class="feature-info">
+                        <h3>Portfolio Optimization</h3>
+                        <p>Multi-asset portfolio optimization using modern portfolio theory and advanced risk models.</p>
+                    </div>
+                </div>
+                <div class="upcoming-feature">
+                    <div class="feature-icon">
+                        <i class="fas fa-cloud"></i>
+                    </div>
+                    <div class="feature-info">
+                        <h3>Real-time Data Integration</h3>
+                        <p>Connect to real-time market data sources for live trading and analysis.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta">
+        <div class="container">
+            <h2>Ready to Experience These Features?</h2>
+            <p>Try our interactive demo and see these powerful tools in action.</p>
+            <a href="demo.html" class="btn btn-primary">Launch Interactive Demo</a>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <span class="logo-icon"><i class="fas fa-chart-line"></i></span>
+                    <span class="logo-text">OilGasOptimize</span>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h3>Navigation</h3>
+                        <ul>
+                            <li><a href="index.html">Home</a></li>
+                            <li><a href="demo.html">Interactive Demo</a></li>
+                            <li><a href="features.html">Features</a></li>
+                            <li><a href="documentation.html">Documentation</a></li>
+                            <li><a href="about.html">About</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h3>Resources</h3>
+                        <ul>
+                            <li><a href="documentation.html#user-guide">User Guide</a></li>
+                            <li><a href="documentation.html#api">API Documentation</a></li>
+                            <li><a href="documentation.html#faq">FAQ</a></li>
+                            <li><a href="https://github.com/Sookchand/OilGasMarketOptimisation" target="_blank">GitHub Repository</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h3>Contact</h3>
+                        <ul>
+                            <li><a href="mailto:sookchand38@gmail.com"><i class="fas fa-envelope"></i> Email</a></li>
+                            <li><a href="https://www.linkedin.com/in/sookchand-harripersad-4a726497/" target="_blank"><i class="fab fa-linkedin"></i> LinkedIn</a></li>
+                            <li><a href="https://github.com/Sookchand" target="_blank"><i class="fab fa-github"></i> GitHub</a></li>
+                            <li><a href="https://sookchandportfolio.netlify.app/" target="_blank"><i class="fas fa-globe"></i> Portfolio</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 Oil & Gas Market Optimization. Developed by <a href="https://sookchandportfolio.netlify.app/" target="_blank">Sookchand Harripersad</a>.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

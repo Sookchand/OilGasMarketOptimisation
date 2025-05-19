@@ -156,6 +156,53 @@ Features:
 - Multiple simulation methods (bootstrap, normal, GBM)
 - Statistical analysis of simulation results
 
+## Running the Dedicated Website
+
+The project includes a dedicated website that showcases all features and integrates with the Streamlit web application.
+
+### Step 1: Navigate to the Website Directory
+
+```bash
+cd website
+```
+
+### Step 2: Start a Local Web Server
+
+You can use Python's built-in HTTP server:
+
+```bash
+# Python 3
+python -m http.server 8000 
+http://localhost:8000.
+```
+
+Or if you have Node.js installed:
+
+```bash
+# Using npx (comes with npm)
+npx serve
+```
+
+### Step 3: Access the Website
+
+Open your web browser and navigate to:
+- http://localhost:8000 (if using Python's server)
+- http://localhost:3000 (if using Node.js serve)
+
+## Connecting the Website to the Streamlit App
+
+To connect the website to your locally running Streamlit app:
+
+1. Note the URL where your Streamlit app is running (typically http://localhost:8501)
+
+2. Edit the `website/demo.html` file and update the iframe src attribute:
+
+```html
+<iframe id="streamlit-iframe" src="http://localhost:8501" frameborder="0"></iframe>
+```
+
+3. Save the file and refresh the website in your browser
+
 ## Troubleshooting
 
 ### Common Issues
@@ -202,6 +249,18 @@ Solution: Try processing one commodity at a time:
 ```bash
 python run_data_pipeline.py --commodity crude_oil
 ```
+
+#### CORS Issues
+
+If the iframe in the website doesn't load the Streamlit app, you might need to run Streamlit with CORS disabled:
+
+```bash
+streamlit run web_app.py --browser.serverAddress="localhost" --server.enableCORS=false
+```
+
+#### Browser Cache
+
+Try clearing your browser cache if you're seeing outdated content in the website or Streamlit app.
 
 ### Getting Help
 

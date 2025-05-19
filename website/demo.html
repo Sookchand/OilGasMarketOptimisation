@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Demo | Oil & Gas Market Optimization</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="page-header">
+        <nav class="navbar">
+            <div class="container">
+                <div class="logo">
+                    <a href="index.html">
+                        <span class="logo-icon"><i class="fas fa-chart-line"></i></span>
+                        <span class="logo-text">OilGasOptimize</span>
+                    </a>
+                </div>
+                <div class="nav-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="demo.html" class="active">Interactive Demo</a></li>
+                    <li><a href="features.html">Features</a></li>
+                    <li><a href="documentation.html">Documentation</a></li>
+                    <li><a href="about.html">About</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <section class="demo-intro">
+        <div class="container">
+            <h1 class="page-title">Interactive Demo</h1>
+            <p class="page-description">Experience the power of our Oil & Gas Market Optimization platform. Upload your own datasets or use our sample data to explore trading strategies and risk analysis tools.</p>
+        </div>
+    </section>
+
+    <section class="demo-options">
+        <div class="container">
+            <div class="options-tabs">
+                <button class="tab-btn active" data-tab="streamlit">Streamlit App</button>
+                <button class="tab-btn" data-tab="screenshots">Screenshots</button>
+                <button class="tab-btn" data-tab="video">Video Tutorial</button>
+            </div>
+
+            <div class="tab-content">
+                <div id="streamlit-tab" class="tab-pane active">
+                    <div class="streamlit-container">
+                        <div class="loading-overlay" id="loading-overlay">
+                            <div class="loading-spinner"></div>
+                            <p class="loading-text">Loading Streamlit App...</p>
+                            <div class="loading-progress">
+                                <div class="progress-bar"></div>
+                            </div>
+                            <p class="loading-status">Initializing application...</p>
+                        </div>
+                        <iframe id="streamlit-iframe" src="https://oil-gas-market-optimization.streamlit.app" frameborder="0"></iframe>
+                    </div>
+                    <div class="demo-instructions">
+                        <h3>How to Use the Demo</h3>
+                        <div class="instruction-steps">
+                            <div class="instruction-step">
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <h4>Choose a Data Source</h4>
+                                    <p>Upload your own CSV/Excel files for each commodity or use our sample data.</p>
+                                </div>
+                            </div>
+                            <div class="instruction-step">
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <h4>Process the Data</h4>
+                                    <p>Clean the data and generate technical indicators for analysis.</p>
+                                </div>
+                            </div>
+                            <div class="instruction-step">
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <h4>Select a Trading Strategy</h4>
+                                    <p>Choose from Moving Average Crossover, RSI, and other strategies.</p>
+                                </div>
+                            </div>
+                            <div class="instruction-step">
+                                <div class="step-number">4</div>
+                                <div class="step-content">
+                                    <h4>Analyze Results</h4>
+                                    <p>View performance metrics, charts, and risk analysis.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="screenshots-tab" class="tab-pane">
+                    <div class="screenshots-gallery">
+                        <div class="screenshot">
+                            <img src="images/data-management.png" alt="Data Management Interface">
+                            <div class="screenshot-caption">
+                                <h4>Data Management</h4>
+                                <p>Upload and process data for different commodities.</p>
+                            </div>
+                        </div>
+                        <div class="screenshot">
+                            <img src="images/trading-strategy.png" alt="Trading Strategy Backtesting">
+                            <div class="screenshot-caption">
+                                <h4>Trading Strategy Backtesting</h4>
+                                <p>Configure and test different trading strategies.</p>
+                            </div>
+                        </div>
+                        <div class="screenshot">
+                            <img src="images/risk-analysis.png" alt="Risk Analysis Dashboard">
+                            <div class="screenshot-caption">
+                                <h4>Risk Analysis</h4>
+                                <p>Calculate VaR and analyze return distributions.</p>
+                            </div>
+                        </div>
+                        <div class="screenshot">
+                            <img src="images/performance-metrics.png" alt="Performance Metrics">
+                            <div class="screenshot-caption">
+                                <h4>Performance Metrics</h4>
+                                <p>View detailed performance statistics for strategies.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="video-tab" class="tab-pane">
+                    <div class="video-container">
+                        <iframe width="100%" height="500" src="https://www.youtube.com/embed/your-video-id" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <div class="video-description">
+                        <h3>Video Tutorial</h3>
+                        <p>This comprehensive tutorial walks you through all the features of the Oil & Gas Market Optimization platform, including:</p>
+                        <ul>
+                            <li>Setting up your data sources</li>
+                            <li>Configuring trading strategies</li>
+                            <li>Interpreting performance metrics</li>
+                            <li>Analyzing risk using VaR and Monte Carlo simulations</li>
+                            <li>Optimizing strategy parameters</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="sample-data">
+        <div class="container">
+            <h2 class="section-title">Sample Datasets</h2>
+            <p class="section-description">Don't have your own data? Download our sample datasets to explore the platform's capabilities.</p>
+            
+            <div class="datasets-grid">
+                <div class="dataset-card">
+                    <div class="dataset-icon">
+                        <i class="fas fa-oil-can"></i>
+                    </div>
+                    <div class="dataset-info">
+                        <h3>Crude Oil</h3>
+                        <p>Historical price data for crude oil from 2018-2023.</p>
+                        <a href="data/crude_oil_sample.csv" class="btn btn-secondary btn-sm" download>Download CSV</a>
+                    </div>
+                </div>
+                <div class="dataset-card">
+                    <div class="dataset-icon">
+                        <i class="fas fa-gas-pump"></i>
+                    </div>
+                    <div class="dataset-info">
+                        <h3>Regular Gasoline</h3>
+                        <p>Historical price data for regular gasoline from 2018-2023.</p>
+                        <a href="data/regular_gasoline_sample.csv" class="btn btn-secondary btn-sm" download>Download CSV</a>
+                    </div>
+                </div>
+                <div class="dataset-card">
+                    <div class="dataset-icon">
+                        <i class="fas fa-gas-pump"></i>
+                    </div>
+                    <div class="dataset-info">
+                        <h3>Conventional Gasoline</h3>
+                        <p>Historical price data for conventional gasoline from 2018-2023.</p>
+                        <a href="data/conventional_gasoline_sample.csv" class="btn btn-secondary btn-sm" download>Download CSV</a>
+                    </div>
+                </div>
+                <div class="dataset-card">
+                    <div class="dataset-icon">
+                        <i class="fas fa-truck"></i>
+                    </div>
+                    <div class="dataset-info">
+                        <h3>Diesel</h3>
+                        <p>Historical price data for diesel fuel from 2018-2023.</p>
+                        <a href="data/diesel_sample.csv" class="btn btn-secondary btn-sm" download>Download CSV</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta">
+        <div class="container">
+            <h2>Want to Learn More?</h2>
+            <p>Explore our detailed documentation to understand the platform's capabilities and technical details.</p>
+            <a href="documentation.html" class="btn btn-primary">View Documentation</a>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <span class="logo-icon"><i class="fas fa-chart-line"></i></span>
+                    <span class="logo-text">OilGasOptimize</span>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h3>Navigation</h3>
+                        <ul>
+                            <li><a href="index.html">Home</a></li>
+                            <li><a href="demo.html">Interactive Demo</a></li>
+                            <li><a href="features.html">Features</a></li>
+                            <li><a href="documentation.html">Documentation</a></li>
+                            <li><a href="about.html">About</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h3>Resources</h3>
+                        <ul>
+                            <li><a href="documentation.html#user-guide">User Guide</a></li>
+                            <li><a href="documentation.html#api">API Documentation</a></li>
+                            <li><a href="documentation.html#faq">FAQ</a></li>
+                            <li><a href="https://github.com/Sookchand/OilGasMarketOptimisation" target="_blank">GitHub Repository</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h3>Contact</h3>
+                        <ul>
+                            <li><a href="mailto:sookchand38@gmail.com"><i class="fas fa-envelope"></i> Email</a></li>
+                            <li><a href="https://www.linkedin.com/in/sookchand-harripersad-4a726497/" target="_blank"><i class="fab fa-linkedin"></i> LinkedIn</a></li>
+                            <li><a href="https://github.com/Sookchand" target="_blank"><i class="fab fa-github"></i> GitHub</a></li>
+                            <li><a href="https://sookchandportfolio.netlify.app/" target="_blank"><i class="fas fa-globe"></i> Portfolio</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 Oil & Gas Market Optimization. Developed by <a href="https://sookchandportfolio.netlify.app/" target="_blank">Sookchand Harripersad</a>.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
