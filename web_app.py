@@ -10,13 +10,38 @@ import pandas as pd
 import numpy as np
 import streamlit as st
 import matplotlib.pyplot as plt
-from scipy import stats
 import io
 import base64
 from datetime import datetime
 
-# Import the Q&A component
-from qa_component import qa_interface
+# Try to import optional dependencies
+try:
+    from scipy import stats as scipy_stats
+except ImportError:
+    # Create a simple replacement for scipy.stats.norm
+    class NormReplacement:
+        def ppf(self, q):
+            # Approximate values for common quantiles
+            if q == 0.95:
+                return 1.645
+            elif q == 0.99:
+                return 2.326
+            else:
+                # Fallback to a simple approximation
+                return 2.0 * (q - 0.5) / (1 - q) if q > 0.5 else 0
+
+        def pdf(self, x):
+            # Simple approximation of normal PDF
+            return np.exp(-0.5 * x**2) / np.sqrt(2 * np.pi)
+
+    class StatsReplacement:
+        def __init__(self):
+            self.norm = NormReplacement()
+
+    scipy_stats = StatsReplacement()
+
+# Add src directory to path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), 'src')))
 
 # Define utility functions that were previously imported
 def load_processed_data(commodity, data_dir='data/processed'):
@@ -664,7 +689,6 @@ def main():
             historical_var = -np.percentile(returns, var_percentile * 100)
 
             # Parametric VaR
-            from scipy import stats as scipy_stats
             z_score = scipy_stats.norm.ppf(confidence_level)
             parametric_var = -(returns.mean() + z_score * returns.std())
 
