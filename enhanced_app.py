@@ -218,7 +218,7 @@ def data_management_page():
             # Add button to navigate to Trading Dashboard
             if st.button("Go to Trading Dashboard"):
                 st.session_state.page = "Trading Dashboard"
-                st.experimental_rerun()
+                st.rerun()
 
     # Individual commodity data generation
     st.subheader("Generate Data for Individual Commodities")
@@ -257,7 +257,7 @@ def data_management_page():
             if st.button(f"Analyze {selected_commodity.replace('_', ' ').title()} Data"):
                 st.session_state.selected_commodity = selected_commodity
                 st.session_state.page = "Trading Dashboard"
-                st.experimental_rerun()
+                st.rerun()
 
 def trading_dashboard_page():
     """Trading Dashboard page functionality."""
@@ -269,7 +269,7 @@ def trading_dashboard_page():
 
         if st.button("Go to Data Management"):
             st.session_state.page = "Data Management"
-            st.experimental_rerun()
+            st.rerun()
     else:
         # Available commodities
         available_commodities = list(st.session_state.processed_data.keys())
@@ -429,7 +429,7 @@ def trading_dashboard_page():
                     # Add button to go to Risk Analysis
                     if st.button("Go to Risk Analysis"):
                         st.session_state.page = "Risk Analysis"
-                        st.experimental_rerun()
+                        st.rerun()
 
                 except Exception as e:
                     st.error(f"Error running backtest: {e}")
@@ -437,7 +437,7 @@ def trading_dashboard_page():
         # Add button to go back to Data Management
         if st.button("Back to Data Management"):
             st.session_state.page = "Data Management"
-            st.experimental_rerun()
+            st.rerun()
 
 def risk_analysis_page():
     """Risk Analysis page functionality."""
@@ -449,7 +449,7 @@ def risk_analysis_page():
 
         if st.button("Go to Data Management"):
             st.session_state.page = "Data Management"
-            st.experimental_rerun()
+            st.rerun()
     else:
         # Available commodities
         available_commodities = list(st.session_state.processed_data.keys())
@@ -660,11 +660,11 @@ def risk_analysis_page():
         with col1:
             if st.button("Back to Trading Dashboard"):
                 st.session_state.page = "Trading Dashboard"
-                st.experimental_rerun()
+                st.rerun()
         with col2:
             if st.button("Back to Data Management"):
                 st.session_state.page = "Data Management"
-                st.experimental_rerun()
+                st.rerun()
 
 def predictive_analytics_page():
     """Predictive Analytics page functionality."""
@@ -676,7 +676,7 @@ def predictive_analytics_page():
 
         if st.button("Go to Data Management"):
             st.session_state.page = "Data Management"
-            st.experimental_rerun()
+            st.rerun()
     else:
         # Tabs for different predictive analytics features
         tab1, tab2, tab3, tab4 = st.tabs(["Price Forecasting", "Production Optimization",
@@ -1195,15 +1195,15 @@ def predictive_analytics_page():
         with col1:
             if st.button("Go to Data Management", key="pred_to_data"):
                 st.session_state.page = "Data Management"
-                st.experimental_rerun()
+                st.rerun()
         with col2:
             if st.button("Go to Trading Dashboard", key="pred_to_trading"):
                 st.session_state.page = "Trading Dashboard"
-                st.experimental_rerun()
+                st.rerun()
         with col3:
             if st.button("Go to Risk Analysis", key="pred_to_risk"):
                 st.session_state.page = "Risk Analysis"
-                st.experimental_rerun()
+                st.rerun()
 
 def risk_assessment_page():
     """Risk Assessment page functionality."""
@@ -1215,7 +1215,7 @@ def risk_assessment_page():
 
         if st.button("Go to Data Management"):
             st.session_state.page = "Data Management"
-            st.experimental_rerun()
+            st.rerun()
     else:
         # Tabs for different risk assessment features
         tab1, tab2, tab3 = st.tabs(["Market Risk Analysis", "Geopolitical Risk Monitoring",
@@ -1774,15 +1774,15 @@ def risk_assessment_page():
         with col1:
             if st.button("Go to Data Management", key="risk_assess_to_data"):
                 st.session_state.page = "Data Management"
-                st.experimental_rerun()
+                st.rerun()
         with col2:
             if st.button("Go to Trading Dashboard", key="risk_assess_to_trading"):
                 st.session_state.page = "Trading Dashboard"
-                st.experimental_rerun()
+                st.rerun()
         with col3:
             if st.button("Go to Risk Analysis", key="risk_assess_to_risk"):
                 st.session_state.page = "Risk Analysis"
-                st.experimental_rerun()
+                st.rerun()
 
 def decision_support_page():
     """Decision Support page functionality."""
@@ -1794,7 +1794,7 @@ def decision_support_page():
 
         if st.button("Go to Data Management"):
             st.session_state.page = "Data Management"
-            st.experimental_rerun()
+            st.rerun()
     else:
         # Tabs for different decision support features
         tab1, tab2, tab3 = st.tabs(["Scenario Modeling", "Natural Language Interface",
@@ -2377,15 +2377,15 @@ def decision_support_page():
         with col1:
             if st.button("Go to Data Management", key="decision_to_data"):
                 st.session_state.page = "Data Management"
-                st.experimental_rerun()
+                st.rerun()
         with col2:
             if st.button("Go to Trading Dashboard", key="decision_to_trading"):
                 st.session_state.page = "Trading Dashboard"
-                st.experimental_rerun()
+                st.rerun()
         with col3:
             if st.button("Go to Risk Analysis", key="decision_to_risk"):
                 st.session_state.page = "Risk Analysis"
-                st.experimental_rerun()
+                st.rerun()
 
 def home_page():
     """Home page with overview and navigation."""
@@ -2409,7 +2409,7 @@ def home_page():
 
         if st.button("Go to Data Management"):
             st.session_state.page = "Data Management"
-            st.experimental_rerun()
+            st.rerun()
 
     with col2:
         st.markdown("### 📈 Trading Strategies")
@@ -2419,7 +2419,7 @@ def home_page():
 
         if st.button("Go to Trading Dashboard"):
             st.session_state.page = "Trading Dashboard"
-            st.experimental_rerun()
+            st.rerun()
 
     with col3:
         st.markdown("### 🔍 Risk Analysis")
@@ -2429,7 +2429,7 @@ def home_page():
 
         if st.button("Go to Risk Analysis"):
             st.session_state.page = "Risk Analysis"
-            st.experimental_rerun()
+            st.rerun()
 
     # Second row of feature cards
     col1, col2, col3 = st.columns(3)
@@ -2442,7 +2442,7 @@ def home_page():
 
         if st.button("Go to Predictive Analytics"):
             st.session_state.page = "Predictive Analytics"
-            st.experimental_rerun()
+            st.rerun()
 
     with col2:
         st.markdown("### ⚠️ Risk Assessment")
@@ -2452,7 +2452,7 @@ def home_page():
 
         if st.button("Go to Risk Assessment"):
             st.session_state.page = "Risk Assessment"
-            st.experimental_rerun()
+            st.rerun()
 
     with col3:
         st.markdown("### 🤖 Decision Support")
@@ -2462,7 +2462,7 @@ def home_page():
 
         if st.button("Go to Decision Support"):
             st.session_state.page = "Decision Support"
-            st.experimental_rerun()
+            st.rerun()
 
     # Key metrics
     st.subheader("Key Performance Metrics")
