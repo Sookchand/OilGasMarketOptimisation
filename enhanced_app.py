@@ -2477,6 +2477,37 @@ def home_page():
     with col4:
         st.metric("Decision-Making Time", "70% ↓", "Faster response to market changes")
 
+    # Add a button to return to portfolio website
+    st.markdown("---")
+    st.subheader("Return to Portfolio")
+
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        st.markdown(
+            """
+            <a href="https://sookchandportfolio.netlify.app/index.html" target="_blank">
+                <button style="
+                    background-color: #4CAF50;
+                    color: white;
+                    padding: 12px 20px;
+                    border: none;
+                    border-radius: 4px;
+                    cursor: pointer;
+                    font-size: 16px;
+                    width: 100%;
+                    margin-top: 10px;
+                    margin-bottom: 10px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                ">
+                    <span style="margin-right: 10px;">🏠</span> Return to Portfolio Website
+                </button>
+            </a>
+            """,
+            unsafe_allow_html=True
+        )
+
 def main():
     """Main function for the web application."""
     # Initialize session state
@@ -2506,6 +2537,33 @@ def main():
          "Predictive Analytics", "Risk Assessment", "Decision Support"],
         index=["Home", "Data Management", "Trading Dashboard", "Risk Analysis",
                "Predictive Analytics", "Risk Assessment", "Decision Support"].index(st.session_state.page)
+    )
+
+    # Add portfolio website link in sidebar
+    st.sidebar.markdown("---")
+    st.sidebar.markdown("### External Links")
+    st.sidebar.markdown(
+        """
+        <a href="https://sookchandportfolio.netlify.app/index.html" target="_blank">
+            <button style="
+                background-color: #4CAF50;
+                color: white;
+                padding: 8px 12px;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 14px;
+                width: 100%;
+                margin-top: 5px;
+                margin-bottom: 5px;
+                display: flex;
+                align-items: center;
+            ">
+                <span style="margin-right: 8px;">🏠</span> Portfolio Website
+            </button>
+        </a>
+        """,
+        unsafe_allow_html=True
     )
 
     # Update session state
