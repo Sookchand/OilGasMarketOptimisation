@@ -198,66 +198,170 @@ def data_management_page():
     """Data Management page functionality."""
     st.header("Data Management")
 
-    # Generate sample data
-    st.subheader("Generate Sample Data")
+    # Create tabs for different data sources
+    tab1, tab2 = st.tabs(["Generate Sample Data", "Upload Real-World Data"])
 
-    # Commodity selection
-    commodities = ['crude_oil', 'regular_gasoline', 'conventional_gasoline', 'diesel']
+    with tab1:
+        # Generate sample data
+        st.subheader("Generate Sample Data")
 
-    if st.button("Generate Sample Data for All Commodities"):
-        with st.spinner("Generating sample data for all commodities..."):
-            for commodity in commodities:
+        # Commodity selection
+        commodities = ['crude_oil', 'regular_gasoline', 'conventional_gasoline', 'diesel']
+
+        if st.button("Generate Sample Data for All Commodities"):
+            with st.spinner("Generating sample data for all commodities..."):
+                for commodity in commodities:
+                    # Generate sample data
+                    df_sample = generate_sample_data(commodity)
+
+                    # Store in session state
+                    st.session_state.processed_data[commodity] = df_sample
+
+                st.success("Sample data for all commodities generated successfully!")
+
+                # Add button to navigate to Trading Dashboard
+                if st.button("Go to Trading Dashboard"):
+                    st.session_state.page = "Trading Dashboard"
+                    st.rerun()
+
+        # Individual commodity data generation
+        st.subheader("Generate Data for Individual Commodities")
+
+        selected_commodity = st.selectbox(
+            "Select a commodity",
+            commodities,
+            format_func=lambda x: x.replace('_', ' ').title(),
+            key="generate_commodity"
+        )
+
+        if st.button(f"Generate Sample Data for {selected_commodity.replace('_', ' ').title()}"):
+            with st.spinner(f"Generating sample data for {selected_commodity}..."):
                 # Generate sample data
-                df_sample = generate_sample_data(commodity)
+                df_sample = generate_sample_data(selected_commodity)
 
                 # Store in session state
-                st.session_state.processed_data[commodity] = df_sample
+                st.session_state.processed_data[selected_commodity] = df_sample
 
-            st.success("Sample data for all commodities generated successfully!")
+                st.success(f"Sample data for {selected_commodity.replace('_', ' ').title()} generated successfully!")
 
-            # Add button to navigate to Trading Dashboard
-            if st.button("Go to Trading Dashboard"):
-                st.session_state.page = "Trading Dashboard"
-                st.rerun()
+                # Display data preview
+                st.subheader("Data Preview")
+                st.dataframe(df_sample.head())
 
-    # Individual commodity data generation
-    st.subheader("Generate Data for Individual Commodities")
+                # Plot data
+                st.subheader("Price Chart")
+                fig, ax = plt.subplots(figsize=(10, 6))
+                ax.plot(df_sample.index, df_sample['Price'])
+                ax.set_title(f"{selected_commodity.replace('_', ' ').title()} Price")
+                ax.set_xlabel("Date")
+                ax.set_ylabel("Price")
+                ax.grid(True)
+                st.pyplot(fig)
 
-    selected_commodity = st.selectbox(
-        "Select a commodity",
-        commodities,
-        format_func=lambda x: x.replace('_', ' ').title()
-    )
+                # Add button to navigate to Trading Dashboard
+                if st.button(f"Analyze {selected_commodity.replace('_', ' ').title()} Data"):
+                    st.session_state.selected_commodity = selected_commodity
+                    st.session_state.page = "Trading Dashboard"
+                    st.rerun()
 
-    if st.button(f"Generate Sample Data for {selected_commodity.replace('_', ' ').title()}"):
-        with st.spinner(f"Generating sample data for {selected_commodity}..."):
-            # Generate sample data
-            df_sample = generate_sample_data(selected_commodity)
+    with tab2:
+        st.subheader("Upload Real-World Commodity Data")
 
-            # Store in session state
-            st.session_state.processed_data[selected_commodity] = df_sample
+        # Commodity selection for upload
+        upload_commodity = st.selectbox(
+            "Select commodity for upload",
+            ['crude_oil', 'regular_gasoline', 'conventional_gasoline', 'diesel'],
+            format_func=lambda x: x.replace('_', ' ').title(),
+            key="upload_commodity"
+        )
 
-            st.success(f"Sample data for {selected_commodity.replace('_', ' ').title()} generated successfully!")
+        # File uploader
+        uploaded_file = st.file_uploader(
+            f"Upload CSV file for {upload_commodity.replace('_', ' ').title()}",
+            type=["csv"],
+            help="Upload a CSV file with date and price columns"
+        )
 
-            # Display data preview
-            st.subheader("Data Preview")
-            st.dataframe(df_sample.head())
+        # Sample data format
+        with st.expander("Show expected CSV format"):
+            st.markdown("""
+            Your CSV file should have the following format:
 
-            # Plot data
-            st.subheader("Price Chart")
-            fig, ax = plt.subplots(figsize=(10, 6))
-            ax.plot(df_sample.index, df_sample['Price'])
-            ax.set_title(f"{selected_commodity.replace('_', ' ').title()} Price")
-            ax.set_xlabel("Date")
-            ax.set_ylabel("Price")
-            ax.grid(True)
-            st.pyplot(fig)
+            ```
+            Date,Price
+            2025-04-30,75.23
+            2025-05-01,76.45
+            2025-05-02,74.89
+            ...
+            ```
 
-            # Add button to navigate to Trading Dashboard
-            if st.button(f"Analyze {selected_commodity.replace('_', ' ').title()} Data"):
-                st.session_state.selected_commodity = selected_commodity
-                st.session_state.page = "Trading Dashboard"
-                st.rerun()
+            - The `Date` column should be in YYYY-MM-DD format
+            - The `Price` column should contain numeric values
+            - Additional columns will be ignored
+            """)
+
+        if uploaded_file is not None:
+            try:
+                # Read the uploaded file
+                df = pd.read_csv(uploaded_file)
+
+                # Check if the file has the required columns
+                required_cols = ['Date', 'Price']
+                if not all(col in df.columns for col in required_cols):
+                    st.error(f"CSV file must contain columns: {', '.join(required_cols)}")
+                else:
+                    # Convert date column to datetime
+                    df['Date'] = pd.to_datetime(df['Date'])
+                    df.set_index('Date', inplace=True)
+
+                    # Store in session state
+                    if 'real_world_data' not in st.session_state:
+                        st.session_state.real_world_data = {}
+
+                    st.session_state.real_world_data[upload_commodity] = df
+
+                    # Display success message
+                    st.success(f"Data for {upload_commodity.replace('_', ' ').title()} uploaded successfully!")
+
+                    # Display data preview
+                    st.subheader("Data Preview")
+                    st.dataframe(df.head())
+
+                    # Plot data
+                    st.subheader("Price Chart")
+                    fig, ax = plt.subplots(figsize=(10, 6))
+                    ax.plot(df.index, df['Price'])
+                    ax.set_title(f"{upload_commodity.replace('_', ' ').title()} Price")
+                    ax.set_xlabel("Date")
+                    ax.set_ylabel("Price")
+                    ax.grid(True)
+                    st.pyplot(fig)
+
+                    # Compare with training data if available
+                    if upload_commodity in st.session_state.processed_data:
+                        st.subheader("Comparison with Training Data")
+
+                        training_data = st.session_state.processed_data[upload_commodity]
+
+                        # Plot comparison
+                        fig, ax = plt.subplots(figsize=(10, 6))
+                        ax.plot(training_data.index, training_data['Price'], label='Training Data')
+                        ax.plot(df.index, df['Price'], label='Real-World Data')
+                        ax.set_title(f"{upload_commodity.replace('_', ' ').title()} Price Comparison")
+                        ax.set_xlabel("Date")
+                        ax.set_ylabel("Price")
+                        ax.legend()
+                        ax.grid(True)
+                        st.pyplot(fig)
+
+                        # Add button to go to Data Drift Detection
+                        if st.button("Analyze Data Drift"):
+                            st.session_state.selected_commodity = upload_commodity
+                            st.session_state.page = "Data Drift Detection"
+                            st.rerun()
+
+            except Exception as e:
+                st.error(f"Error processing the uploaded file: {e}")
 
 def trading_dashboard_page():
     """Trading Dashboard page functionality."""
@@ -705,55 +809,155 @@ def predictive_analytics_page():
             # Update selected commodity in session state
             st.session_state.selected_commodity = selected_commodity
 
-            # Get data for selected commodity
-            df = st.session_state.processed_data[selected_commodity]
+            # Get training data
+            training_data = st.session_state.processed_data[selected_commodity]
+
+            # Check if real-world data is available for this commodity
+            has_real_data = (
+                'real_world_data' in st.session_state and
+                selected_commodity in st.session_state.real_world_data
+            )
 
             # Model selection
             model_type = st.selectbox(
                 "Select forecasting model",
-                ["ARIMA", "Prophet", "LSTM Neural Network", "XGBoost"]
+                ["ARIMA", "Prophet", "LSTM Neural Network", "XGBoost", "Ensemble"]
             )
 
-            # Forecast horizon
-            forecast_days = st.slider("Forecast Horizon (days)", 7, 365, 30)
+            # Forecast parameters
+            col1, col2 = st.columns(2)
+            with col1:
+                forecast_days = st.slider(
+                    "Forecast Horizon (days)",
+                    7, 90, 30,
+                    help="Number of days to forecast into the future"
+                )
+            with col2:
+                confidence_level = st.slider(
+                    "Confidence Level (%)",
+                    80, 99, 95,
+                    help="Confidence level for prediction intervals"
+                ) / 100
 
-            # Generate forecast
+            # Generate forecast button
             if st.button("Generate Forecast"):
                 with st.spinner("Generating forecast..."):
                     try:
                         # Determine price column
-                        price_col = 'Price' if 'Price' in df.columns else 'close'
+                        price_col = 'Price' if 'Price' in training_data.columns else 'close'
+
+                        # Get the last date in the training data
+                        last_date = training_data.index[-1]
 
                         # Create a simple forecast (placeholder for actual models)
-                        last_date = df.index[-1]
                         future_dates = pd.date_range(start=last_date, periods=forecast_days+1)[1:]
 
                         # Simple forecast based on historical mean and std
-                        mean_return = df[price_col].pct_change().mean()
-                        std_return = df[price_col].pct_change().std()
+                        mean_return = training_data[price_col].pct_change().mean()
+                        std_return = training_data[price_col].pct_change().std()
 
-                        last_price = df[price_col].iloc[-1]
+                        last_price = training_data[price_col].iloc[-1]
                         forecast_returns = np.random.normal(mean_return, std_return, forecast_days)
                         forecast_prices = [last_price]
 
                         for ret in forecast_returns:
                             forecast_prices.append(forecast_prices[-1] * (1 + ret))
 
+                        # Calculate confidence intervals
+                        z_score = 1.96 if confidence_level == 0.95 else 2.58 if confidence_level == 0.99 else 1.65
+                        std_dev = std_return * np.sqrt(np.arange(1, forecast_days + 1))
+
+                        lower_bounds = []
+                        upper_bounds = []
+
+                        for i, price in enumerate(forecast_prices[1:]):
+                            lower_bound = price * (1 - z_score * std_dev[i])
+                            upper_bound = price * (1 + z_score * std_dev[i])
+                            lower_bounds.append(lower_bound)
+                            upper_bounds.append(upper_bound)
+
+                        # Create forecast DataFrame
                         forecast_df = pd.DataFrame({
                             'Date': future_dates,
-                            'Forecasted_Price': forecast_prices[1:]
+                            'Forecast': forecast_prices[1:],
+                            'Lower Bound': lower_bounds,
+                            'Upper Bound': upper_bounds
                         })
                         forecast_df.set_index('Date', inplace=True)
 
+                        # Display forecast
+                        st.subheader("Forecast Results")
+                        st.dataframe(forecast_df.round(2))
+
                         # Plot forecast
-                        fig, ax = plt.subplots(figsize=(10, 6))
-                        ax.plot(df.index[-90:], df[price_col].iloc[-90:], label='Historical')
-                        ax.plot(forecast_df.index, forecast_df['Forecasted_Price'], label='Forecast', color='red')
-                        ax.axvline(x=last_date, color='black', linestyle='--', alpha=0.5)
-                        ax.fill_between(forecast_df.index,
-                                       forecast_df['Forecasted_Price'] * 0.9,
-                                       forecast_df['Forecasted_Price'] * 1.1,
-                                       color='red', alpha=0.2)
+                        fig, ax = plt.subplots(figsize=(12, 6))
+
+                        # Plot historical data
+                        ax.plot(
+                            training_data.index[-90:],
+                            training_data[price_col][-90:],
+                            label='Historical Data',
+                            color='blue'
+                        )
+
+                        # Plot forecast
+                        ax.plot(
+                            forecast_df.index,
+                            forecast_df['Forecast'],
+                            label='Forecast',
+                            color='red'
+                        )
+
+                        # Plot confidence intervals
+                        ax.fill_between(
+                            forecast_df.index,
+                            forecast_df['Lower Bound'],
+                            forecast_df['Upper Bound'],
+                            color='red',
+                            alpha=0.2,
+                            label=f'{confidence_level:.0%} Confidence Interval'
+                        )
+
+                        # If real-world data is available, plot it for comparison
+                        if has_real_data:
+                            real_data = st.session_state.real_world_data[selected_commodity]
+
+                            # Filter real data to forecast period
+                            real_data_forecast_period = real_data[real_data.index >= last_date]
+
+                            if not real_data_forecast_period.empty:
+                                ax.plot(
+                                    real_data_forecast_period.index,
+                                    real_data_forecast_period['Price'],
+                                    label='Actual Data',
+                                    color='green',
+                                    linestyle='--'
+                                )
+
+                                # Calculate forecast accuracy metrics
+                                forecast_dates = forecast_df.index
+                                actual_values = []
+                                forecast_values = []
+
+                                for date in forecast_dates:
+                                    if date in real_data_forecast_period.index:
+                                        actual_values.append(real_data_forecast_period.loc[date, 'Price'])
+                                        forecast_values.append(forecast_df.loc[date, 'Forecast'])
+
+                                if actual_values and forecast_values:
+                                    # Calculate metrics
+                                    mape = np.mean(np.abs((np.array(actual_values) - np.array(forecast_values)) / np.array(actual_values))) * 100
+                                    rmse = np.sqrt(np.mean((np.array(actual_values) - np.array(forecast_values))**2))
+
+                                    # Display metrics
+                                    st.subheader("Forecast Accuracy Metrics")
+                                    col1, col2 = st.columns(2)
+                                    with col1:
+                                        st.metric("MAPE", f"{mape:.2f}%", help="Mean Absolute Percentage Error")
+                                    with col2:
+                                        st.metric("RMSE", f"${rmse:.2f}", help="Root Mean Square Error")
+
+                        ax.axvline(x=last_date, color='black', linestyle='--', alpha=0.5, label='Forecast Start')
                         ax.set_title(f"{selected_commodity.replace('_', ' ').title()} Price Forecast ({model_type})")
                         ax.set_xlabel("Date")
                         ax.set_ylabel("Price")
@@ -766,9 +970,9 @@ def predictive_analytics_page():
                         metrics = {
                             "Model": model_type,
                             "Forecast Horizon": f"{forecast_days} days",
-                            "Confidence Interval": "90%",
-                            "Expected Price (End of Forecast)": f"${forecast_df['Forecasted_Price'].iloc[-1]:.2f}",
-                            "Forecasted Change": f"{((forecast_df['Forecasted_Price'].iloc[-1] / last_price) - 1) * 100:.2f}%"
+                            "Confidence Level": f"{confidence_level:.0%}",
+                            "Expected Price (End of Forecast)": f"${forecast_df['Forecast'].iloc[-1]:.2f}",
+                            "Forecasted Change": f"{((forecast_df['Forecast'].iloc[-1] / last_price) - 1) * 100:.2f}%"
                         }
 
                         col1, col2 = st.columns(2)
@@ -777,6 +981,14 @@ def predictive_analytics_page():
                                 col1.metric(key, value)
                             else:
                                 col2.metric(key, value)
+
+                        # If real data is not available, show a message
+                        if not has_real_data:
+                            st.info("Upload real-world data for this commodity to compare forecast accuracy.")
+
+                            if st.button("Go to Data Upload"):
+                                st.session_state.page = "Data Management"
+                                st.rerun()
 
                     except Exception as e:
                         st.error(f"Error generating forecast: {e}")
@@ -2432,7 +2644,7 @@ def home_page():
             st.rerun()
 
     # Second row of feature cards
-    col1, col2, col3 = st.columns(3)
+    col1, col2, col3, col4 = st.columns(4)
 
     with col1:
         st.markdown("### 🔮 Predictive Analytics")
@@ -2462,6 +2674,16 @@ def home_page():
 
         if st.button("Go to Decision Support"):
             st.session_state.page = "Decision Support"
+            st.rerun()
+
+    with col4:
+        st.markdown("### 📊 Data Drift Detection")
+        st.write("Compare with real-world data")
+        st.write("Detect model drift")
+        st.write("Get retraining recommendations")
+
+        if st.button("Go to Data Drift Detection"):
+            st.session_state.page = "Data Drift Detection"
             st.rerun()
 
     # Key metrics
@@ -2508,6 +2730,215 @@ def home_page():
             unsafe_allow_html=True
         )
 
+def data_drift_detection_page():
+    """Data Drift Detection page functionality."""
+    st.header("Data Drift Detection")
+
+    # Check if we have both processed data and real-world data
+    if not st.session_state.processed_data:
+        st.warning("No processed data available. Please go to the Data Management page to generate sample data.")
+
+        if st.button("Go to Data Management"):
+            st.session_state.page = "Data Management"
+            st.rerun()
+    elif 'real_world_data' not in st.session_state or not st.session_state.real_world_data:
+        st.warning("No real-world data available. Please upload data in the Data Management page.")
+
+        if st.button("Go to Data Management"):
+            st.session_state.page = "Data Management"
+            st.rerun()
+    else:
+        # Get commodities that have both processed and real-world data
+        common_commodities = [
+            commodity for commodity in st.session_state.processed_data.keys()
+            if commodity in st.session_state.real_world_data
+        ]
+
+        if not common_commodities:
+            st.warning("No commodities with both processed and real-world data found.")
+        else:
+            # Select commodity
+            selected_commodity = st.selectbox(
+                "Select a commodity",
+                common_commodities,
+                format_func=lambda x: x.replace('_', ' ').title(),
+                key="drift_commodity"
+            )
+
+            # Get data
+            training_data = st.session_state.processed_data[selected_commodity]
+            real_data = st.session_state.real_world_data[selected_commodity]
+
+            # Determine price column
+            price_col = 'Price' if 'Price' in training_data.columns else 'close'
+
+            # Calculate basic statistics for both datasets
+            training_stats = {
+                'Mean': training_data[price_col].mean(),
+                'Std Dev': training_data[price_col].std(),
+                'Min': training_data[price_col].min(),
+                'Max': training_data[price_col].max(),
+                'Skewness': training_data[price_col].skew(),
+                'Kurtosis': training_data[price_col].kurtosis()
+            }
+
+            real_stats = {
+                'Mean': real_data['Price'].mean(),
+                'Std Dev': real_data['Price'].std(),
+                'Min': real_data['Price'].min(),
+                'Max': real_data['Price'].max(),
+                'Skewness': real_data['Price'].skew(),
+                'Kurtosis': real_data['Price'].kurtosis()
+            }
+
+            # Calculate percent change
+            percent_change = {
+                key: ((real_stats[key] - training_stats[key]) / training_stats[key]) * 100
+                for key in training_stats.keys()
+            }
+
+            # Display statistics comparison
+            st.subheader("Statistical Comparison")
+
+            stats_df = pd.DataFrame({
+                'Training Data': training_stats,
+                'Real-World Data': real_stats,
+                'Percent Change': {k: f"{v:.2f}%" for k, v in percent_change.items()}
+            }).T
+
+            st.dataframe(stats_df)
+
+            # Detect significant drift
+            drift_threshold = 10  # 10% change threshold
+            significant_drift = any(abs(v) > drift_threshold for v in percent_change.values())
+
+            # Display drift status
+            if significant_drift:
+                st.error("⚠️ Significant data drift detected! The model may need retraining.")
+            else:
+                st.success("✅ No significant data drift detected. The model is still valid.")
+
+            # Visual comparison
+            st.subheader("Visual Comparison")
+
+            # Plot distributions
+            fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
+
+            # Price distribution
+            ax1.hist(training_data[price_col], bins=30, alpha=0.5, label='Training Data')
+            ax1.hist(real_data['Price'], bins=30, alpha=0.5, label='Real-World Data')
+            ax1.set_title('Price Distribution')
+            ax1.set_xlabel('Price')
+            ax1.set_ylabel('Frequency')
+            ax1.legend()
+
+            # QQ Plot (simplified version)
+            ax2.scatter(np.sort(training_data[price_col]), np.sort(real_data['Price']), alpha=0.5)
+            min_val = min(training_data[price_col].min(), real_data['Price'].min())
+            max_val = max(training_data[price_col].max(), real_data['Price'].max())
+            ax2.plot([min_val, max_val], [min_val, max_val], 'r--')
+            ax2.set_title('Q-Q Plot')
+            ax2.set_xlabel('Training Data Quantiles')
+            ax2.set_ylabel('Real-World Data Quantiles')
+
+            st.pyplot(fig)
+
+            # Time series comparison
+            st.subheader("Time Series Comparison")
+
+            # Get common date range if any
+            common_dates = sorted(set(training_data.index) & set(real_data.index))
+
+            if common_dates:
+                # Plot time series
+                fig, ax = plt.subplots(figsize=(12, 6))
+
+                # Plot training data
+                ax.plot(training_data.index, training_data[price_col], label='Training Data', alpha=0.7)
+
+                # Plot real data
+                ax.plot(real_data.index, real_data['Price'], label='Real-World Data', alpha=0.7)
+
+                # Highlight common date range
+                min_common = min(common_dates)
+                max_common = max(common_dates)
+                ax.axvspan(min_common, max_common, color='gray', alpha=0.2, label='Common Date Range')
+
+                ax.set_title(f"{selected_commodity.replace('_', ' ').title()} Price Comparison")
+                ax.set_xlabel("Date")
+                ax.set_ylabel("Price")
+                ax.legend()
+                ax.grid(True)
+
+                st.pyplot(fig)
+
+                # Calculate drift metrics for common dates
+                if len(common_dates) > 5:  # Only if we have enough common dates
+                    st.subheader("Drift Metrics for Common Date Range")
+
+                    training_common = training_data.loc[common_dates, price_col]
+                    real_common = real_data.loc[common_dates, 'Price']
+
+                    # Calculate metrics
+                    mae = np.mean(np.abs(training_common - real_common))
+                    mape = np.mean(np.abs((training_common - real_common) / training_common)) * 100
+                    rmse = np.sqrt(np.mean((training_common - real_common) ** 2))
+
+                    col1, col2, col3 = st.columns(3)
+                    with col1:
+                        st.metric("MAE", f"${mae:.2f}")
+                    with col2:
+                        st.metric("MAPE", f"{mape:.2f}%")
+                    with col3:
+                        st.metric("RMSE", f"${rmse:.2f}")
+            else:
+                st.info("No common dates found between training and real-world data.")
+
+            # Drift analysis and recommendations
+            st.subheader("Drift Analysis and Recommendations")
+
+            if significant_drift:
+                # Identify which features drifted the most
+                max_drift_feature = max(percent_change.items(), key=lambda x: abs(x[1]))
+
+                recommendations = [
+                    f"**Significant drift detected in {max_drift_feature[0]}** ({max_drift_feature[1]:.2f}% change)",
+                    "**Recommended actions:**",
+                    "1. Retrain the model with the new data",
+                    "2. Consider using a sliding window approach for training",
+                    "3. Implement an automated retraining pipeline",
+                    "4. Add more recent features that might capture the changing dynamics",
+                    "5. Consider ensemble methods that can adapt to changing conditions"
+                ]
+            else:
+                recommendations = [
+                    "**No significant drift detected**",
+                    "**Recommended actions:**",
+                    "1. Continue monitoring for drift",
+                    "2. Periodically validate model performance",
+                    "3. Consider incremental learning to incorporate new data",
+                    "4. Maintain the current model configuration"
+                ]
+
+            for rec in recommendations:
+                st.markdown(rec)
+
+            # Navigation buttons
+            st.subheader("Navigation")
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                if st.button("Go to Data Management", key="drift_to_data"):
+                    st.session_state.page = "Data Management"
+                    st.rerun()
+            with col2:
+                if st.button("Go to Predictive Analytics", key="drift_to_pred"):
+                    st.session_state.page = "Predictive Analytics"
+                    st.rerun()
+            with col3:
+                if st.button("Go to Home", key="drift_to_home"):
+                    st.session_state.page = "Home"
+                    st.rerun()
+
 def main():
     """Main function for the web application."""
     # Initialize session state
@@ -2534,9 +2965,13 @@ def main():
     page = st.sidebar.radio(
         "Select a page",
         ["Home", "Data Management", "Trading Dashboard", "Risk Analysis",
-         "Predictive Analytics", "Risk Assessment", "Decision Support"],
+         "Predictive Analytics", "Risk Assessment", "Decision Support", "Data Drift Detection"],
         index=["Home", "Data Management", "Trading Dashboard", "Risk Analysis",
-               "Predictive Analytics", "Risk Assessment", "Decision Support"].index(st.session_state.page)
+               "Predictive Analytics", "Risk Assessment", "Decision Support",
+               "Data Drift Detection"].index(st.session_state.page)
+               if st.session_state.page in ["Home", "Data Management", "Trading Dashboard", "Risk Analysis",
+                                           "Predictive Analytics", "Risk Assessment", "Decision Support",
+                                           "Data Drift Detection"] else 0
     )
 
     # Add portfolio website link in sidebar
@@ -2584,6 +3019,8 @@ def main():
         risk_assessment_page()
     elif page == "Decision Support":
         decision_support_page()
+    elif page == "Data Drift Detection":
+        data_drift_detection_page()
 
 if __name__ == "__main__":
     main()
