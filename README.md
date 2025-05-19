@@ -321,19 +321,29 @@ To process the data and generate features:
 python run_data_pipeline.py
 ```
 
-### Run Trading Dashboard
+### Run Enhanced Web Application
 
-To launch the trading dashboard:
+To launch the comprehensive web application with all features:
 
 ```bash
-python run_trading_dashboard.py
+streamlit run enhanced_app.py
 ```
 
 This will start a Streamlit app that provides:
-- Strategy backtesting with multiple trading strategies
-- Performance metrics calculation
-- Risk analysis with Value at Risk (VaR)
-- Monte Carlo simulations
+- Data management for multiple commodities
+- Trading dashboard with strategy backtesting
+- Risk analysis with Value at Risk (VaR) and Monte Carlo simulations
+- Predictive analytics with price forecasting and production optimization
+- Risk assessment framework with market, geopolitical, and regulatory analysis
+- Interactive decision support with scenario modeling and natural language interface
+
+### Run Minimal Web Application (for Streamlit Cloud)
+
+For a lightweight version optimized for Streamlit Cloud:
+
+```bash
+streamlit run minimal_app.py
+```
 
 ### Run Full Pipeline
 
@@ -343,38 +353,68 @@ To run the complete pipeline including data processing, model training, and trad
 python run_full_pipeline.py
 ```
 
+### Live Demo
+
+Access the live demo at: [https://avgyam98dkhfoqdxeny8nt.streamlit.app/](https://avgyam98dkhfoqdxeny8nt.streamlit.app/)
+
 ## Project Components
 
-### Data Processing
+### Data Management
 
-The data processing pipeline handles:
+The data management module handles:
 - Data acquisition from various sources
 - Cleaning and preprocessing
 - Feature engineering
 - Data storage in optimized formats
+- Sample data generation for testing
 
-### Trading Strategies
+### Trading Dashboard
 
-The system implements several trading strategies:
-- **Trend Following**: Moving Average Crossover, MACD
-- **Mean Reversion**: RSI, Bollinger Bands
-- **Volatility Breakout**: Donchian Channel, ATR Channel
+The trading dashboard provides:
+- Multiple trading strategies (Moving Average Crossover, RSI)
+- Strategy parameter optimization
+- Performance metrics calculation
+- Visualization of trading signals and returns
 
-### Risk Management
+### Risk Analysis
 
-The risk management components include:
+The risk analysis module includes:
 - Value at Risk (VaR) calculation using multiple methods
 - Monte Carlo simulation for scenario analysis
-- Portfolio optimization
-- Risk limits and monitoring
+- Return distribution analysis
+- Portfolio value projections
 
-### Dashboards
+### Predictive Analytics
 
-The system provides interactive dashboards for:
-- Market analysis and visualization
-- Trading strategy backtesting
-- Risk assessment
-- Performance monitoring
+The predictive analytics engine offers:
+- Price forecasting using various models
+- Production optimization based on market conditions
+- Maintenance scheduling with failure prediction
+- Supply chain optimization visualization
+
+### Risk Assessment Framework
+
+The risk assessment framework provides:
+- Market risk analysis with hedging recommendations
+- Geopolitical risk monitoring with global risk map
+- Regulatory compliance tracking and impact analysis
+- Portfolio diversification recommendations
+
+### Interactive Decision Support
+
+The decision support system includes:
+- Scenario modeling with financial impact analysis
+- Natural language interface for market queries
+- Advanced visualizations (correlation heatmaps, seasonality charts)
+- Supply chain network visualization
+
+### Web Application
+
+The system provides a comprehensive web application with:
+- Intuitive navigation between all modules
+- Interactive parameter adjustment
+- Data persistence across sessions
+- Responsive design for various devices
 
 ## Implementation Best Practices & Solutions
 
