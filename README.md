@@ -300,7 +300,7 @@ Are you ready to revolutionize the industry with AI-powered trading & optimizati
 
 3. Create necessary directories:
    ```bash
-   mkdir -p data/raw data/processed data/features data/insights data/chroma logs results/forecasting results/backtests results/model_selection results/monte_carlo results/trading
+   mkdir -p data/raw data/processed data/features data/insights data/chroma logs results/forecasting results/backtests results/model_selection results/monte_carlo results/trading reports/market models/registry
    ```
 
 ## Usage
@@ -336,6 +336,8 @@ This will start a Streamlit app that provides:
 - Predictive analytics with price forecasting and production optimization
 - Risk assessment framework with market, geopolitical, and regulatory analysis
 - Interactive decision support with scenario modeling and natural language interface
+- Advanced drift detection with automated reporting
+- Hybrid retrieval system for market intelligence
 
 ### Run Minimal Web Application (for Streamlit Cloud)
 
@@ -343,6 +345,30 @@ For a lightweight version optimized for Streamlit Cloud:
 
 ```bash
 streamlit run minimal_app.py
+```
+
+### Run Hybrid Retrieval System
+
+To use the advanced hybrid retrieval system for market intelligence:
+
+```bash
+python src/rag/retrieval/run_hybrid_retrieval.py --query "OPEC production cuts impact on crude oil prices" --top-k 5
+```
+
+### Generate Market Reports
+
+To generate comprehensive market reports with visualizations and insights:
+
+```bash
+python src/gen_ai/reporting/run_market_report.py --commodities crude_oil natural_gas gasoline diesel
+```
+
+### Run Online Learning Framework
+
+To update models with new data and detect drift:
+
+```bash
+python src/models/run_online_learning.py --commodities crude_oil --model-types arima xgboost lstm price_drivers
 ```
 
 ### Run Full Pipeline
@@ -355,7 +381,7 @@ python run_full_pipeline.py
 
 ### Live Demo
 
-Access the live demo at: [https://avgyam98dkhfoqdxeny8nt.streamlit.app/](https://avgyam98dkhfoqdxeny8nt.streamlit.app/)
+Access the live demo at: [https://7jpnmpbuxmt9bumsmvqjpn.streamlit.app/](https://7jpnmpbuxmt9bumsmvqjpn.streamlit.app/)
 
 ## Project Components
 
@@ -418,6 +444,49 @@ The EIA price drivers integration provides:
 - Feature importance analysis for price drivers
 - Visualization of price driver impacts on forecasts
 
+### Advanced Drift Detection System
+
+The advanced drift detection system offers:
+- Comprehensive statistical tests for data distribution changes
+- Multiple drift detection algorithms (KS test, Chi-square, etc.)
+- Visual comparison tools for distribution analysis
+- Automated reporting with recommendations for model retraining
+- Integration with the online learning framework
+- Drift monitoring dashboard with historical drift tracking
+
+### Hybrid Retrieval System for RAG
+
+The hybrid retrieval system provides:
+- Combined semantic and keyword search capabilities
+- Vector indexing for efficient similarity search
+- Keyword indexing for precise term matching
+- Reranking of search results for improved relevance
+- Configurable weighting between semantic and keyword search
+- Support for metadata filtering and faceted search
+- Integration with the market intelligence system
+
+### Automated Market Report Generator
+
+The market report generator delivers:
+- Comprehensive market reports with data visualizations
+- Natural language insights and analysis
+- Risk assessment with heatmaps and metrics
+- Trading signals based on technical indicators
+- Customizable report templates
+- Support for multiple output formats (HTML, PDF)
+- Scheduled report generation capabilities
+
+### Online Learning Framework
+
+The online learning framework enables:
+- Continuous model improvement with new data
+- Model registry for version management
+- Evaluation metrics for model comparison
+- Drift detection integration for triggering updates
+- Automated model retraining when significant drift is detected
+- Performance tracking across model versions
+- A/B testing of model improvements
+
 ### Web Application
 
 The system provides a comprehensive web application with:
@@ -425,6 +494,7 @@ The system provides a comprehensive web application with:
 - Interactive parameter adjustment
 - Data persistence across sessions
 - Responsive design for various devices
+- Integration of all enhanced components
 
 ## Implementation Best Practices & Solutions
 

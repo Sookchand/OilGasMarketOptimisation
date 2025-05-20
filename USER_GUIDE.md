@@ -39,6 +39,8 @@ The Home page provides:
 - An overview of the system's capabilities
 - Quick access buttons to all modules
 - Key performance metrics
+- Links to recently generated reports
+- System status indicators
 
 **Best Practice**: Start here to get familiar with the system's capabilities before diving into specific modules.
 
@@ -261,6 +263,132 @@ This module enables you to:
 - Understand the relative importance of different market factors
 - Make more informed trading and risk management decisions
 
+### 10. Hybrid Retrieval System
+
+This module provides:
+- Advanced search capabilities for market intelligence
+- Combined semantic and keyword search
+- Configurable weighting between search methods
+- Metadata filtering for precise results
+- Reranking for improved relevance
+
+**Step-by-Step Usage**:
+
+1. Navigate to the Hybrid Retrieval module
+2. Enter your query in the search box
+3. Adjust the weights between semantic and keyword search if needed
+4. Set any metadata filters (date range, source, topic)
+5. Click "Search" to retrieve relevant information
+6. Review the results and their relevance scores
+7. Click on any result to see the full document
+
+**Key Features**:
+- **Hybrid Search**:
+  - Semantic search using vector embeddings
+  - Keyword search using traditional indexing
+  - Configurable weighting between methods
+  - Reranking for improved relevance
+
+- **Metadata Filtering**:
+  - Date range filtering
+  - Source filtering (news, reports, etc.)
+  - Topic filtering (crude oil, natural gas, etc.)
+  - Combination of multiple filters
+
+**Best Practice**:
+- Formulate clear, specific queries for best results
+- Adjust weights based on your search needs (more semantic for conceptual searches, more keyword for specific terms)
+- Use metadata filters to narrow down results
+- Enable reranking for more relevant results
+- Review multiple results to get comprehensive information
+
+### 11. Market Report Generator
+
+This module provides:
+- Automated generation of comprehensive market reports
+- Data visualizations for price trends and forecasts
+- Risk assessment with heatmaps and metrics
+- Trading signals based on technical indicators
+- Customizable report templates
+
+**Step-by-Step Usage**:
+
+1. Navigate to the Market Report Generator module
+2. Select the commodities to include in the report
+3. Set the date range and forecast horizon
+4. Choose the report template and output format
+5. Click "Generate Report" to create the report
+6. View the report in your browser or download it
+7. Share the report with stakeholders
+
+**Key Features**:
+- **Report Components**:
+  - Executive summary with key insights
+  - Price trend analysis with visualizations
+  - Price forecasts with confidence intervals
+  - Risk assessment with metrics and heatmaps
+  - Trading signals based on technical indicators
+  - Market insights and recommendations
+
+- **Customization Options**:
+  - Template selection
+  - Commodity selection
+  - Date range adjustment
+  - Output format (HTML, PDF)
+  - Visualization styles
+
+**Best Practice**:
+- Generate reports on a regular schedule (daily, weekly)
+- Customize templates to focus on your areas of interest
+- Include multiple commodities for comparative analysis
+- Share reports with stakeholders in their preferred format
+- Archive reports for historical trend analysis
+
+### 12. Online Learning Framework
+
+This module provides:
+- Continuous model improvement with new data
+- Model registry for version management
+- Evaluation metrics for model comparison
+- Drift detection integration
+- Automated model retraining
+
+**Step-by-Step Usage**:
+
+1. Navigate to the Online Learning module
+2. Select the commodities and model types to update
+3. Set the update frequency and drift threshold
+4. Enable or disable auto-update
+5. Click "Run Update" to check for drift and update models
+6. Review the update results and performance metrics
+7. Compare model versions in the model registry
+
+**Key Features**:
+- **Model Registry**:
+  - Version management for all models
+  - Performance metrics tracking
+  - Model metadata storage
+  - Active model designation
+
+- **Evaluation Metrics**:
+  - MAE, MSE, RMSE, R², MAPE
+  - Direction accuracy
+  - Performance comparison between versions
+  - Improvement calculation
+
+- **Update Configuration**:
+  - Update frequency (hourly, daily, weekly)
+  - Drift threshold adjustment
+  - Improvement threshold for model updates
+  - Auto-update toggle
+
+**Best Practice**:
+- Configure update frequency based on market volatility
+- Set appropriate drift thresholds for different commodities
+- Review model performance metrics regularly
+- Use the model registry to compare different versions
+- Enable auto-update for continuous improvement
+
 **Step-by-Step Usage**:
 
 1. Navigate to the Predictive Analytics module
@@ -386,6 +514,24 @@ For the most effective use of the system, follow this workflow:
    - Create scenarios based on your risk assessment
    - Analyze the financial impact of each scenario
 
+8. **Use the Hybrid Retrieval System**:
+   - Formulate natural language queries about market dynamics
+   - Adjust the weights between semantic and keyword search for optimal results
+   - Use metadata filtering to narrow down search results
+   - Analyze the retrieved information to inform decision-making
+
+9. **Generate Market Reports**:
+   - Create daily or weekly reports for multiple commodities
+   - Customize report templates to focus on specific aspects
+   - Include visualizations for better understanding
+   - Share reports with stakeholders
+
+10. **Leverage the Online Learning Framework**:
+    - Configure the update frequency based on market volatility
+    - Set appropriate drift thresholds for different commodities
+    - Monitor model performance metrics across versions
+    - Enable auto-update for continuous improvement
+
 ### Performance Considerations
 
 - Generating large datasets or running many simulations may take time
@@ -415,6 +561,24 @@ For the most effective use of the system, follow this workflow:
 6. **Forecast Comparison Not Showing**:
    - Solution: Upload real-world data that includes dates after the last date in your training data
 
+7. **Hybrid Retrieval Issues**:
+   - Solution: If search results are not relevant, try adjusting the weights
+   - Solution: Ensure your query is clear and specific
+   - Solution: Try using metadata filters to narrow down results
+   - Solution: Check that the document index has been properly built
+
+8. **Report Generation Errors**:
+   - Solution: Ensure all required directories exist
+   - Solution: Check that data is available for the selected commodities
+   - Solution: Verify that templates are correctly formatted
+   - Solution: For PDF output, ensure WeasyPrint is properly installed
+
+9. **Online Learning Issues**:
+   - Solution: Check that the model registry is properly initialized
+   - Solution: Ensure new data is available for model updates
+   - Solution: Verify that drift thresholds are appropriate
+   - Solution: Check logs for detailed error messages
+
 ### Getting Help
 
 If you encounter issues not covered in this guide:
@@ -424,6 +588,18 @@ If you encounter issues not covered in this guide:
 
 ## Conclusion
 
-The Oil & Gas Market Optimization System provides powerful tools for analyzing market data, optimizing trading strategies, and making informed decisions. By following this guide, you can leverage the full potential of the system to gain valuable insights and competitive advantages in the oil and gas industry.
+The Oil & Gas Market Optimization System provides powerful tools for analyzing market data, optimizing trading strategies, and making informed decisions. The recent enhancements have significantly improved its capabilities for market intelligence, reporting, and continuous model improvement.
+
+Key benefits of the enhanced system include:
+
+1. **More Accurate Forecasting**: With the online learning framework and drift detection, models continuously improve and adapt to changing market conditions.
+
+2. **Better Market Intelligence**: The hybrid retrieval system provides more relevant and comprehensive information for decision-making.
+
+3. **Automated Reporting**: The market report generator creates professional-quality reports with visualizations and insights, saving time and improving communication.
+
+4. **Continuous Improvement**: The system now learns and improves over time, ensuring that it remains valuable as market conditions change.
+
+By following this guide, you can leverage the full potential of the system to gain valuable insights and competitive advantages in the oil and gas industry.
 
 Happy analyzing!

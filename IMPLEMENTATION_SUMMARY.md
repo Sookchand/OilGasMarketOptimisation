@@ -10,7 +10,7 @@ The Oil & Gas Market Optimization System is a comprehensive AI-powered platform 
 
 ### 1. Comprehensive Module Structure
 
-The system is organized into seven interconnected modules:
+The system is organized into eleven interconnected modules:
 
 - **Data Management**: For data generation, visualization, processing, and CSV upload
 - **Trading Dashboard**: For strategy backtesting and optimization
@@ -19,6 +19,10 @@ The system is organized into seven interconnected modules:
 - **Risk Assessment**: For market, geopolitical, and regulatory risk analysis
 - **Decision Support**: For scenario modeling and advanced visualization
 - **Data Drift Detection**: For comparing model predictions with real-world data and detecting when models need retraining
+- **Hybrid Retrieval System**: For advanced information retrieval combining semantic and keyword search
+- **Automated Market Report Generator**: For comprehensive market reports with visualizations and insights
+- **Online Learning Framework**: For continuous model improvement with new data
+- **Model Registry**: For managing model versions and metadata
 
 ### 2. Interactive User Interface
 
@@ -364,6 +368,309 @@ def calculate_supply_demand_balance(df: pd.DataFrame) -> pd.DataFrame:
     return df_features
 ```
 
+### 9. Hybrid Retrieval System
+
+**Key Implementation Features**:
+- Combined semantic and keyword search capabilities
+- Vector indexing for efficient similarity search
+- Keyword indexing for precise term matching
+- Reranking of search results for improved relevance
+- Configurable weighting between semantic and keyword search
+- Support for metadata filtering and faceted search
+
+**Code Highlights**:
+```python
+class HybridRetriever:
+    """
+    Hybrid retrieval system combining vector search and keyword search.
+    """
+
+    def __init__(
+        self,
+        vector_weight: float = 0.7,
+        keyword_weight: float = 0.3,
+        vector_index: Optional[VectorIndex] = None,
+        keyword_index: Optional[KeywordIndex] = None,
+        reranker: Optional[Reranker] = None
+    ):
+        """
+        Initialize the hybrid retriever.
+
+        Parameters
+        ----------
+        vector_weight : float, optional
+            Weight for vector search results, by default 0.7
+        keyword_weight : float, optional
+            Weight for keyword search results, by default 0.3
+        vector_index : VectorIndex, optional
+            Vector index, by default None (will create a new one)
+        keyword_index : KeywordIndex, optional
+            Keyword index, by default None (will create a new one)
+        reranker : Reranker, optional
+            Reranker, by default None (will create a new one)
+        """
+        self.vector_weight = vector_weight
+        self.keyword_weight = keyword_weight
+        self.vector_index = vector_index or VectorIndex()
+        self.keyword_index = keyword_index or KeywordIndex()
+        self.reranker = reranker or Reranker()
+
+    def add_documents(self, documents: List[Document]) -> None:
+        """
+        Add documents to the retriever.
+
+        Parameters
+        ----------
+        documents : List[Document]
+            List of documents to add
+        """
+        # Add documents to both indices
+        self.vector_index.add_documents(documents)
+        self.keyword_index.add_documents(documents)
+
+    def retrieve(
+        self,
+        query: str,
+        top_k: int = 5,
+        use_reranker: bool = True,
+        filter_metadata: Optional[Dict[str, Any]] = None
+    ) -> List[Tuple[Document, float]]:
+        """
+        Retrieve documents using hybrid search.
+
+        Parameters
+        ----------
+        query : str
+            Query string
+        top_k : int, optional
+            Number of documents to retrieve, by default 5
+        use_reranker : bool, optional
+            Whether to use the reranker, by default True
+        filter_metadata : Dict[str, Any], optional
+            Metadata filter, by default None
+
+        Returns
+        -------
+        List[Tuple[Document, float]]
+            List of (document, score) tuples
+        """
+        # Get vector search results
+        vector_results = self.vector_index.search(query, top_k=top_k*2, filter_metadata=filter_metadata)
+
+        # Get keyword search results
+        keyword_results = self.keyword_index.search(query, top_k=top_k*2, filter_metadata=filter_metadata)
+
+        # Combine results
+        combined_results = self._combine_results(vector_results, keyword_results)
+
+        # Rerank results if requested
+        if use_reranker and combined_results:
+            combined_results = self.reranker.rerank(query, combined_results, top_k=top_k)
+        else:
+            # Just take the top_k
+            combined_results = combined_results[:top_k]
+
+        return combined_results
+```
+
+### 10. Automated Market Report Generator
+
+**Key Implementation Features**:
+- Comprehensive market reports with data visualizations
+- Natural language insights and analysis
+- Risk assessment with heatmaps and metrics
+- Trading signals based on technical indicators
+- Customizable report templates
+- Support for multiple output formats (HTML, PDF)
+
+**Code Highlights**:
+```python
+class MarketReportGenerator:
+    """
+    Automated Market Report Generator.
+
+    This class provides methods to generate comprehensive market reports
+    with data visualizations, insights, and recommendations.
+    """
+
+    def __init__(
+        self,
+        template_dir: str = 'templates/reports',
+        output_dir: str = 'reports/market',
+        data_provider = None,
+        model_provider = None,
+        llm_provider = None
+    ):
+        """
+        Initialize the market report generator.
+
+        Parameters
+        ----------
+        template_dir : str, optional
+            Directory containing report templates, by default 'templates/reports'
+        output_dir : str, optional
+            Directory to save generated reports, by default 'reports/market'
+        data_provider : object, optional
+            Provider for market data, by default None
+        model_provider : object, optional
+            Provider for forecasting models, by default None
+        llm_provider : object, optional
+            Provider for language model generation, by default None
+        """
+        self.template_dir = template_dir
+        self.output_dir = output_dir
+        self.data_provider = data_provider
+        self.model_provider = model_provider
+        self.llm_provider = llm_provider
+
+        # Create directories if they don't exist
+        os.makedirs(template_dir, exist_ok=True)
+        os.makedirs(output_dir, exist_ok=True)
+        os.makedirs('logs', exist_ok=True)
+
+        # Initialize Jinja2 environment
+        self.jinja_env = jinja2.Environment(
+            loader=jinja2.FileSystemLoader(template_dir),
+            autoescape=jinja2.select_autoescape(['html', 'xml'])
+        )
+
+        # Create default template if it doesn't exist
+        self._create_default_template()
+
+    def generate_daily_report(
+        self,
+        commodities: List[str],
+        date: Optional[datetime] = None,
+        lookback_days: int = 30,
+        forecast_days: int = 14,
+        template_name: str = 'daily_report.html',
+        output_format: str = 'html'
+    ) -> str:
+        """
+        Generate a comprehensive daily market report.
+
+        Parameters
+        ----------
+        commodities : List[str]
+            List of commodities to include in the report
+        date : datetime, optional
+            Date for the report, by default None (today)
+        lookback_days : int, optional
+            Number of days to look back for historical data, by default 30
+        forecast_days : int, optional
+            Number of days to forecast, by default 14
+        template_name : str, optional
+            Name of the template to use, by default 'daily_report.html'
+        output_format : str, optional
+            Output format ('html' or 'pdf'), by default 'html'
+
+        Returns
+        -------
+        str
+            Path to the generated report
+        """
+        # Implementation details...
+
+        return output_path
+```
+
+### 11. Online Learning Framework
+
+**Key Implementation Features**:
+- Continuous model improvement with new data
+- Model registry for version management
+- Evaluation metrics for model comparison
+- Drift detection integration for triggering updates
+- Automated model retraining when significant drift is detected
+- Performance tracking across model versions
+
+**Code Highlights**:
+```python
+class OnlineLearningManager:
+    """
+    Online Learning Manager for continuous model improvement.
+    """
+
+    def __init__(
+        self,
+        model_registry: Optional[ModelRegistry] = None,
+        evaluation_metrics: Optional[EvaluationMetrics] = None,
+        drift_detector: Optional[DriftDetector] = None,
+        config_path: Optional[str] = None
+    ):
+        """
+        Initialize the online learning manager.
+
+        Parameters
+        ----------
+        model_registry : ModelRegistry, optional
+            Model registry, by default None (will create a new one)
+        evaluation_metrics : EvaluationMetrics, optional
+            Evaluation metrics, by default None (will create a new one)
+        drift_detector : DriftDetector, optional
+            Drift detector, by default None (will create a new one)
+        config_path : str, optional
+            Path to configuration file, by default None
+        """
+        self.model_registry = model_registry or ModelRegistry()
+        self.evaluation_metrics = evaluation_metrics or EvaluationMetrics()
+        self.drift_detector = drift_detector or DriftDetector()
+
+        # Default configuration
+        self.config = {
+            'update_frequency': 'daily',  # 'hourly', 'daily', 'weekly'
+            'drift_threshold': 0.05,
+            'improvement_threshold': 5.0,  # Percentage improvement required to update model
+            'auto_update': True,
+            'commodities': ['crude_oil', 'regular_gasoline', 'conventional_gasoline', 'diesel'],
+            'model_types': ['arima', 'xgboost', 'lstm', 'price_drivers'],
+            'categorical_features': []
+        }
+
+        # Load configuration if provided
+        if config_path and os.path.exists(config_path):
+            try:
+                with open(config_path, 'r') as f:
+                    config = json.load(f)
+                    self.config.update(config)
+                logger.info(f"Loaded configuration from {config_path}")
+            except Exception as e:
+                logger.error(f"Error loading configuration: {e}")
+
+        # Create directories
+        os.makedirs('logs', exist_ok=True)
+
+        # Last update timestamp
+        self.last_update = None
+
+    def update_models(
+        self,
+        commodities: Optional[List[str]] = None,
+        model_types: Optional[List[str]] = None,
+        force_update: bool = False
+    ) -> Dict[str, Dict[str, Any]]:
+        """
+        Update models with new data if significant drift is detected.
+
+        Parameters
+        ----------
+        commodities : List[str], optional
+            List of commodities to update, by default None (will use all from config)
+        model_types : List[str], optional
+            List of model types to update, by default None (will use all from config)
+        force_update : bool, optional
+            Whether to force update regardless of drift, by default False
+
+        Returns
+        -------
+        Dict[str, Dict[str, Any]]
+            Dictionary with update results for each commodity and model type
+        """
+        # Implementation details...
+
+        return results
+```
+
 **Code Highlights**:
 ```python
 def data_drift_detection_page():
@@ -434,6 +741,28 @@ def data_drift_detection_page():
 7. **Model Scenarios**:
    - Create scenarios based on your risk assessment
    - Analyze the financial impact of each scenario
+
+8. **Use the Hybrid Retrieval System**:
+   - Formulate natural language queries about market dynamics
+   - Adjust the weights between semantic and keyword search for optimal results
+   - Use metadata filtering to narrow down search results
+   - Enable reranking for more relevant results
+   - Analyze the retrieved information to inform decision-making
+
+9. **Generate Market Reports**:
+   - Create daily or weekly reports for multiple commodities
+   - Customize report templates to focus on specific aspects
+   - Include visualizations for better understanding
+   - Share reports with stakeholders in HTML or PDF format
+   - Use the reports to track market trends over time
+
+10. **Leverage the Online Learning Framework**:
+    - Configure the update frequency based on market volatility
+    - Set appropriate drift thresholds for different commodities
+    - Monitor model performance metrics across versions
+    - Use the model registry to manage and compare different models
+    - Enable auto-update for continuous improvement
+    - Periodically review the model update history
 
 ## Conclusion
 
