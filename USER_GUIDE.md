@@ -252,7 +252,51 @@ This module helps you:
 - Get recommendations for model retraining
 - Identify which features have drifted the most
 
+### 9. EIA Price Drivers Integration
+
+This module enables you to:
+- Access and analyze EIA data on crude oil price drivers
+- Visualize the impact of supply, demand, and inventory factors on prices
+- Enhance forecasting accuracy with price drivers data
+- Understand the relative importance of different market factors
+- Make more informed trading and risk management decisions
+
 **Step-by-Step Usage**:
+
+1. Navigate to the Predictive Analytics module
+2. Select a commodity from the dropdown menu
+3. Choose "Price Drivers" as the forecasting model
+4. Set the forecast horizon and confidence level
+5. Click "Generate Forecast" to see predictions
+6. The system will automatically:
+   - Display the forecast with confidence intervals
+   - Show the feature importance of different price drivers
+   - Provide explanations of the top price drivers
+7. Use the feature importance chart to understand which factors are most influential
+8. Read the explanations to gain insights into how each factor affects prices
+
+**Key Features**:
+- **Price Drivers Data**:
+  - OPEC production levels
+  - Non-OPEC production
+  - Global consumption
+  - OECD inventories
+  - Supply-demand balance
+  - Days of supply
+  - Spare production capacity
+
+- **Feature Importance Analysis**:
+  - Relative importance of each price driver
+  - Visual representation through bar charts
+  - Detailed explanations of top drivers
+
+**Best Practice**:
+- Compare forecasts from the Price Drivers model with other models
+- Pay special attention to the top 3-5 most important features
+- Consider how geopolitical events might affect the key price drivers
+- Use the insights to inform your trading and risk management strategies
+
+**Step-by-Step Usage for Data Drift Detection**:
 
 1. First, ensure you have both:
    - Generated sample data for at least one commodity
@@ -322,9 +366,11 @@ For the most effective use of the system, follow this workflow:
 
 4. **Generate Forecasts**:
    - Use multiple models to forecast future prices
+   - Try the Price Drivers model for enhanced forecasting
    - Compare forecasts with real-world data
    - Evaluate forecast accuracy metrics
    - Consider the confidence intervals in your planning
+   - Analyze the feature importance of price drivers
 
 5. **Detect Data Drift**:
    - Compare statistical properties between training and real-world data

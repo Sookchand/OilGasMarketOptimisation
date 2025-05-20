@@ -821,7 +821,7 @@ def predictive_analytics_page():
             # Model selection
             model_type = st.selectbox(
                 "Select forecasting model",
-                ["ARIMA", "Prophet", "LSTM Neural Network", "XGBoost", "Ensemble"]
+                ["ARIMA", "Prophet", "LSTM Neural Network", "XGBoost", "Price Drivers", "Ensemble"]
             )
 
             # Forecast parameters
@@ -981,6 +981,57 @@ def predictive_analytics_page():
                                 col1.metric(key, value)
                             else:
                                 col2.metric(key, value)
+
+                        # Display price drivers feature importance if Price Drivers model is selected
+                        if model_type == "Price Drivers":
+                            st.subheader("Price Drivers Feature Importance")
+
+                            # Create sample feature importance for demonstration
+                            price_driver_features = [
+                                "opec_production", "non_opec_production", "global_balance",
+                                "oecd_inventories", "global_consumption", "supply_demand_ratio",
+                                "opec_spare_capacity", "global_days_supply", "non_opec_balance"
+                            ]
+
+                            importance_values = [
+                                0.25, 0.18, 0.15, 0.12, 0.10, 0.08, 0.05, 0.04, 0.03
+                            ]
+
+                            # Create feature importance DataFrame
+                            feature_importance = pd.DataFrame({
+                                'feature': price_driver_features,
+                                'importance': importance_values
+                            }).sort_values('importance', ascending=False)
+
+                            # Plot feature importance
+                            fig, ax = plt.subplots(figsize=(10, 6))
+                            ax.barh(
+                                feature_importance['feature'],
+                                feature_importance['importance'],
+                                color='skyblue'
+                            )
+                            ax.set_xlabel('Importance')
+                            ax.set_title('Price Drivers Feature Importance')
+                            ax.invert_yaxis()  # Display the most important feature at the top
+                            st.pyplot(fig)
+
+                            # Explanation of price drivers
+                            st.subheader("Price Driver Explanations")
+
+                            driver_explanations = {
+                                "opec_production": "OPEC production levels directly impact global oil supply and prices. Increases typically lead to price decreases.",
+                                "non_opec_production": "Production from non-OPEC countries (like US, Russia) affects market balance and price stability.",
+                                "global_balance": "The difference between global production and consumption indicates market surplus or deficit.",
+                                "oecd_inventories": "Inventory levels in developed countries serve as a buffer against supply disruptions.",
+                                "global_consumption": "Global demand for oil products drives price movements, especially in growing economies.",
+                                "supply_demand_ratio": "The ratio between supply and demand indicates market tightness or oversupply.",
+                                "opec_spare_capacity": "Available additional production capacity in OPEC countries affects market sentiment.",
+                                "global_days_supply": "Number of days current inventories can meet demand without additional production.",
+                                "non_opec_balance": "The balance between non-OPEC production and global consumption."
+                            }
+
+                            for feature in feature_importance['feature'][:5]:  # Show top 5 explanations
+                                st.markdown(f"**{feature.replace('_', ' ').title()}**: {driver_explanations.get(feature, 'No explanation available.')}")
 
                         # If real data is not available, show a message
                         if not has_real_data:

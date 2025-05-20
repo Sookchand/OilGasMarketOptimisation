@@ -321,3 +321,51 @@ def load_processed_data(commodity: str, data_dir: str = 'data/processed') -> pd.
     except Exception as e:
         logger.error(f"Error loading processed data for {commodity}: {e}")
         return pd.DataFrame()
+
+def load_features_data(commodity: str, with_price_drivers: bool = False, data_dir: str = 'data/features') -> pd.DataFrame:
+    """
+    Load features data for a specific commodity.
+
+    Parameters
+    ----------
+    commodity : str
+        Name of the commodity (e.g., 'crude_oil', 'regular_gasoline')
+    with_price_drivers : bool, optional
+        Whether to load features with price drivers, by default False
+    data_dir : str, optional
+        Directory containing features data files, by default 'data/features'
+
+    Returns
+    -------
+    pd.DataFrame
+        Features data for the commodity
+    """
+    try:
+        # Determine file path based on whether price drivers are requested
+        if with_price_drivers:
+            file_path = os.path.join(data_dir, f"{commodity}_with_drivers.parquet")
+            if not os.path.exists(file_path):
+                logger.warning(f"Features with price drivers not found: {file_path}")
+                logger.info("Falling back to standard features")
+                file_path = os.path.join(data_dir, f"{commodity}_features.parquet")
+        else:
+            file_path = os.path.join(data_dir, f"{commodity}_features.parquet")
+
+        # Check if file exists
+        if not os.path.exists(file_path):
+            logger.warning(f"Features file not found: {file_path}")
+            return pd.DataFrame()
+
+        # Load parquet file
+        df = pd.read_parquet(file_path)
+        logger.info(f"Successfully loaded {len(df)} rows from {file_path}")
+
+        # Ensure index is datetime
+        if not isinstance(df.index, pd.DatetimeIndex):
+            df.index = pd.to_datetime(df.index)
+
+        return df
+
+    except Exception as e:
+        logger.error(f"Error loading features data for {commodity}: {e}")
+        return pd.DataFrame()

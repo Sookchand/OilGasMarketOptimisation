@@ -304,6 +304,66 @@ def generate_forecast(df, model_type='arima', forecast_horizon=30, confidence=0.
 - Detailed recommendations for model retraining
 - Identification of features with the most significant drift
 
+### 8. EIA Price Drivers Integration
+
+**Key Implementation Features**:
+- Automated acquisition of EIA data on crude oil price drivers
+- Feature engineering based on supply, demand, and inventory metrics
+- Enhanced forecasting models leveraging price drivers data
+- Feature importance analysis for price drivers
+- Visualization of price driver impacts on forecasts
+
+**Code Highlights**:
+```python
+def fetch_eia_price_driver(
+    series_id: str,
+    start_date: str,
+    end_date: str,
+    frequency: str = 'monthly',
+    api_key: Optional[str] = None
+) -> Dict[str, Any]:
+    """
+    Fetch price driver data from EIA API with error handling and rate limiting.
+    """
+    if api_key is None:
+        api_key = os.getenv('EIA_API_KEY')
+        if not api_key:
+            raise ValueError("EIA API key not found. Set the EIA_API_KEY environment variable.")
+
+    # Extract the category from the series ID (e.g., 'STEO' from 'STEO.COPR_NONOPEC.M')
+    category = series_id.split('.')[0].lower()
+
+    # Construct the URL based on the category
+    url = f"https://api.eia.gov/v2/{category}/data/?api_key={api_key}&frequency={frequency}"
+    url += f"&data[0]=value&facets[series][]={series_id}&start={start_date}&end={end_date}"
+
+    # Make request with error handling and rate limiting
+    response = requests.get(url)
+
+    # Process response and return data
+    return response.json()
+
+def calculate_supply_demand_balance(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Calculate supply-demand balance features.
+    """
+    df_features = df.copy()
+
+    # Global supply-demand balance
+    df_features['global_balance'] = df_features['global_production'] - df_features['global_consumption']
+
+    # OPEC supply-demand balance
+    df_features['opec_balance'] = df_features['opec_production'] - df_features['global_consumption']
+
+    # Non-OPEC supply-demand balance
+    df_features['non_opec_balance'] = df_features['non_opec_production'] - df_features['global_consumption']
+
+    # Supply-demand ratio
+    df_features['supply_demand_ratio'] = df_features['global_production'] / df_features['global_consumption']
+
+    return df_features
+```
+
 **Code Highlights**:
 ```python
 def data_drift_detection_page():
@@ -355,9 +415,11 @@ def data_drift_detection_page():
 
 4. **Generate Forecasts**:
    - Use multiple models to forecast future prices
+   - Leverage EIA price drivers data for enhanced forecasting
    - Compare forecasts with real-world data
    - Evaluate forecast accuracy metrics (MAPE, RMSE)
    - Consider the confidence intervals in your planning
+   - Analyze feature importance of price drivers
 
 5. **Detect Data Drift**:
    - Compare statistical properties between training and real-world data

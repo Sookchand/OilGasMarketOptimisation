@@ -387,7 +387,8 @@ The risk analysis module includes:
 ### Predictive Analytics
 
 The predictive analytics engine offers:
-- Price forecasting using various models
+- Price forecasting using various models including EIA price drivers
+- Real-world data comparison with forecast accuracy metrics
 - Production optimization based on market conditions
 - Maintenance scheduling with failure prediction
 - Supply chain optimization visualization
@@ -407,6 +408,15 @@ The decision support system includes:
 - Natural language interface for market queries
 - Advanced visualizations (correlation heatmaps, seasonality charts)
 - Supply chain network visualization
+
+### EIA Price Drivers Integration
+
+The EIA price drivers integration provides:
+- Automated acquisition of EIA data on crude oil price drivers
+- Feature engineering based on supply, demand, and inventory metrics
+- Enhanced forecasting models leveraging price drivers data
+- Feature importance analysis for price drivers
+- Visualization of price driver impacts on forecasts
 
 ### Web Application
 
